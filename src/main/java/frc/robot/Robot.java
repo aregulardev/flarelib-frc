@@ -4,16 +4,14 @@
 
 package frc.robot;
 
+import com.flarerobotics.lib.BatteryUpdater;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import com.flarerobotics.lib.BatteryUpdater;
-
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
@@ -30,8 +28,8 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs"));
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
-        BatteryUpdater.setNominalVoltage(12.5);;
-
+        BatteryUpdater.setNominalVoltage(12.5);
+        ;
     }
 
     @Override
@@ -42,12 +40,10 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void disabledInit() {
-    }
+    public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {
-    }
+    public void disabledPeriodic() {}
 
     @Override
     public void autonomousInit() {
@@ -59,8 +55,7 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {
-    }
+    public void autonomousPeriodic() {}
 
     @Override
     public void teleopInit() {
@@ -75,12 +70,11 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopPeriodic() {
         /*
-         * System.out.println(
-         * Timer.getFPGATimestamp() + "::" +
+         * System.out.println( Timer.getFPGATimestamp() + "::" +
          * m_robotContainer.sim.getCurrentHeight_Unit().in(Centimeters));
          */
-       //  System.out.println(
-       //         Timer.getFPGATimestamp() + "::" + m_robotContainer.sim.getRPM());
+        // System.out.println(
+        // Timer.getFPGATimestamp() + "::" + m_robotContainer.sim.getRPM());
     }
 
     @Override
@@ -89,14 +83,11 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void testPeriodic() {
-    }
+    public void testPeriodic() {}
 
     @Override
-    public void simulationInit() {
-    }
+    public void simulationInit() {}
 
     @Override
-    public void simulationPeriodic() {
-    }
+    public void simulationPeriodic() {}
 }

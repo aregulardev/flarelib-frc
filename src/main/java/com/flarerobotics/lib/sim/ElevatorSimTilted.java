@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
 
 /**
- * Represents a simulated elevator mechanism.
- * Allows for the use of non-90 degree tilted systems.
+ * Represents a simulated elevator mechanism. Allows for the use of non-90
+ * degree tilted systems.
  */
 public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
     // Gearbox for the elevator.
@@ -46,8 +46,7 @@ public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
      *
      * @param plant                The linear system that represents the elevator.
      *                             This system can be created with
-     *                             {@link edu.wpi.first.math.system.plant.LinearSystemId#createElevatorSystem(DCMotor, double,
-     *                             double, double)}.
+     *                             {@link edu.wpi.first.math.system.plant.LinearSystemId#createElevatorSystem(DCMotor, double, double, double)}.
      * @param gearbox              The type of and number of motors in the elevator
      *                             gearbox.
      * @param minHeightMeters      The min allowable height of the elevator.
@@ -55,9 +54,8 @@ public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
      * @param simulateGravity      Whether gravity should be simulated or not.
      * @param startingHeightMeters The starting height of the elevator.
      * @param measurementStdDevs   The standard deviations of the measurements. Can
-     *                             be omitted if no
-     *                             noise is desired. If present must have 1 element
-     *                             for position.
+     *                             be omitted if no noise is desired. If present
+     *                             must have 1 element for position.
      */
     @SuppressWarnings("this-escape")
     public ElevatorSimTilted(
@@ -89,9 +87,8 @@ public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
      * @param simulateGravity      Whether gravity should be simulated or not.
      * @param startingHeightMeters The starting height of the elevator.
      * @param measurementStdDevs   The standard deviations of the measurements. Can
-     *                             be omitted if no
-     *                             noise is desired. If present must have 1 element
-     *                             for position.
+     *                             be omitted if no noise is desired. If present
+     *                             must have 1 element for position.
      */
     public ElevatorSimTilted(
             double kV,
@@ -127,9 +124,8 @@ public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
      * @param simulateGravity      Whether gravity should be simulated or not.
      * @param startingHeightMeters The starting height of the elevator.
      * @param measurementStdDevs   The standard deviations of the measurements. Can
-     *                             be omitted if no
-     *                             noise is desired. If present must have 1 element
-     *                             for position.
+     *                             be omitted if no noise is desired. If present
+     *                             must have 1 element for position.
      */
     public ElevatorSimTilted(
             DCMotor gearbox,
@@ -153,21 +149,18 @@ public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
 
     /**
      * Sets the elevator's state. The new position will be limited between the
-     * minimum and maximum
-     * allowed heights.
+     * minimum and maximum allowed heights.
      *
      * @param positionMeters          The new position in meters.
      * @param velocityMetersPerSecond New velocity in meters per second.
      */
     public final void setState(double positionMeters, double velocityMetersPerSecond) {
-        setState(
-                VecBuilder.fill(
-                        MathUtil.clamp(positionMeters, m_minHeight, m_maxHeight), velocityMetersPerSecond));
+        setState(VecBuilder.fill(MathUtil.clamp(positionMeters, m_minHeight, m_maxHeight), velocityMetersPerSecond));
     }
 
     /**
      * Sets the system's tilt to the given angle, defaults to 0 degrees for upright.
-     * 
+     *
      * @param angle The tilt angle in degrees.
      */
     public void setSystemTilt(double angle) {
@@ -244,8 +237,7 @@ public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
         double kV = -m_plant.getA().get(1, 1) * kA;
         double motorVelocityRadPerSec = m_x.get(1, 0) * kV * m_gearbox.KvRadPerSecPerVolt;
         var appliedVoltage = m_u.get(0, 0);
-        return m_gearbox.getCurrent(motorVelocityRadPerSec, appliedVoltage)
-                * Math.signum(appliedVoltage);
+        return m_gearbox.getCurrent(motorVelocityRadPerSec, appliedVoltage) * Math.signum(appliedVoltage);
     }
 
     /**
@@ -270,7 +262,8 @@ public class ElevatorSimTilted extends LinearSystemSim<N2, N1, N2> {
         // Calculate updated x-hat from Runge-Kutta.
         var updatedXhat = NumericalIntegration.rkdp(
                 (x, _u) -> {
-                    Matrix<N2, N1> xdot = m_plant.getA().times(x).plus(m_plant.getB().times(_u));
+                    Matrix<N2, N1> xdot =
+                            m_plant.getA().times(x).plus(m_plant.getB().times(_u));
                     if (m_simulateGravity) {
                         xdot = xdot.plus(VecBuilder.fill(0, -9.8 * Math.abs(Math.cos(m_tilt))));
                     }

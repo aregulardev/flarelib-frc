@@ -5,6 +5,5 @@
 package frc.robot;
 
 public class RobotContainer {
-    public RobotContainer() {
-    }
+    public RobotContainer() {}
 }

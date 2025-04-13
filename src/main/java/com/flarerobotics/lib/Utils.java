@@ -5,9 +5,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
-/**
- * A static utility class for generic functions.
- */
+/** A static utility class for generic functions. */
 public class Utils {
     /** Unconstructuble as Utils is a static class. */
     private Utils() {
@@ -17,10 +15,10 @@ public class Utils {
     /**
      * Returns wether a number is close to another number by a negligible amount
      * (10^-7).
-     * 
+     *
      * @param a The first number.
      * @param b The second number.
-     * @return true if roughly equal.
+     * @return True if roughly equal.
      */
     public static boolean epsilonEquals(double a, double b) {
         return MathUtil.isNear(a, b, 1e-7);
@@ -34,7 +32,8 @@ public class Utils {
      * @return The new rotated pose.
      */
     public static Pose3d rotateAround(Pose3d currentPose, Translation3d point, Rotation3d rot) {
-        return new Pose3d(currentPose.getTranslation().rotateAround(point, rot),
+        return new Pose3d(
+                currentPose.getTranslation().rotateAround(point, rot),
                 currentPose.getRotation().rotateBy(rot));
     }
 }

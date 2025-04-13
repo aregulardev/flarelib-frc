@@ -3,9 +3,7 @@ package com.flarerobotics.lib.container;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * A 3D vector class.
- */
+/** A 3D vector class. */
 @Getter
 @Setter
 public class Vector3 {
@@ -40,6 +38,6 @@ public class Vector3 {
     }
 
     public double magnitude() {
-        return Math.sqrt(x*x + y*y + z*z);
+        return Math.sqrt(x * x + y * y + z * z);
     }
 }

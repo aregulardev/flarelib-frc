@@ -1,15 +1,12 @@
 package com.flarerobotics.lib.vision.io;
 
+import com.flarerobotics.lib.vision.VisionSubsystem;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import java.util.function.Supplier;
-
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-
-import com.flarerobotics.lib.vision.VisionSubsystem;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform3d;
 
 /** IO implementation for simulation using PhotonVision's built-in simulator. */
 public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
@@ -21,11 +18,10 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
     /**
      * Constructs a new VisionIOPhotonVisionSim.
      *
-     * @param name         The name of the camera.
+     * @param name The name of the camera.
      * @param poseSupplier Supplier for the robot pose to use in simulation.
      */
-    public VisionIOPhotonVisionSim(
-            String name, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
+    public VisionIOPhotonVisionSim(String name, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
         super(name, robotToCamera);
         m_poseSupplier = poseSupplier;
 

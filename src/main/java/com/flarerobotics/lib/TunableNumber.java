@@ -3,8 +3,11 @@ package com.flarerobotics.lib;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * A number which can be tuned in SmartDashboard. For any numbers that need to be tuned during runtime.
- * <p><b>Can be used for</b>: PID tuning, elevator height tuning, ...
+ * A number which can be tuned in SmartDashboard. For any numbers that need to
+ * be tuned during runtime.
+ *
+ * <p>
+ * <b>Can be used for</b>: PID tuning, elevator height tuning, ...
  */
 public class TunableNumber {
     private String m_key;
@@ -14,17 +17,17 @@ public class TunableNumber {
 
     /**
      * Constructs a new TunableNumber.
-     * 
+     *
      * @param key The key on SmartDashboard.
      */
     public TunableNumber(String key) {
         m_key = key;
-        
     }
 
     /**
-     * If tuning mode is enabled, returns the tuned number. Otherwise returns the default value.
-     * 
+     * If tuning mode is enabled, returns the tuned number. Otherwise returns the
+     * default value.
+     *
      * @return The current value.
      */
     public double get() {
@@ -33,7 +36,7 @@ public class TunableNumber {
 
     /**
      * Returns the default value.
-     * 
+     *
      * @return The default value.
      */
     public double getDefault() {
@@ -42,13 +45,12 @@ public class TunableNumber {
 
     /**
      * Sets the default value of the number.
-     * 
+     *
      * @param defaultValue The default value.
      */
     public void setDefault(double defaultValue) {
         m_defaultValue = defaultValue;
 
-        if (doTuning)
-            SmartDashboard.putNumber(m_key, SmartDashboard.getNumber(m_key, defaultValue));
+        if (doTuning) SmartDashboard.putNumber(m_key, SmartDashboard.getNumber(m_key, defaultValue));
     }
 }

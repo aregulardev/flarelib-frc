@@ -8,9 +8,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 
-/**
- * A shooter angle and velocity calculator.
- */
+/** A shooter angle and velocity calculator. */
 public class ShooterCalculator {
     private final double m_shooterHeight;
     private final double m_wheelCircumference;
@@ -25,7 +23,7 @@ public class ShooterCalculator {
 
     /**
      * Constructs a new ShooterCalculator.
-     * 
+     *
      * @param shooterHeight  The height of the shooter.
      * @param wheelDiameter  The diameter of the wheel.
      * @param gearRatio      The reduction.
@@ -34,7 +32,11 @@ public class ShooterCalculator {
      *                       increase precision. (Horizontal Distance(m) - RPM pair
      *                       map)
      */
-    public ShooterCalculator(Distance shooterHeight, Distance wheelDiameter, double gearRatio, double maxMotorRpm,
+    public ShooterCalculator(
+            Distance shooterHeight,
+            Distance wheelDiameter,
+            double gearRatio,
+            double maxMotorRpm,
             InterpolatingDoubleTreeMap rpmLookupTable) {
         m_shooterHeight = shooterHeight.in(Meters);
         m_wheelCircumference = Math.PI * wheelDiameter.in(Meters);
@@ -45,7 +47,7 @@ public class ShooterCalculator {
 
     /**
      * Updates the shooter parameters.
-     * 
+     *
      * @param targetPosition The position of the shooter's target.
      * @param robotPose      The robot's current pose on the field.
      */
@@ -73,7 +75,7 @@ public class ShooterCalculator {
 
     /**
      * Calcultes the optimal angle of the shooter based on the RPM.
-     * 
+     *
      * @param horizontalDist The horizontal distance, in meters.
      * @param verticalDist   The vertical distance, in meters.
      * @return The optimal angle, in degrees.
@@ -83,8 +85,8 @@ public class ShooterCalculator {
         double g = 9.81;
         double v = (m_desiredRPM * m_wheelCircumference) / (60 * m_gearRatio);
 
-        double discriminant = Math.pow(v, 4) - g * (g * Math.pow(horizontalDist, 2)
-                + 2 * verticalDist * Math.pow(v, 2));
+        double discriminant =
+                Math.pow(v, 4) - g * (g * Math.pow(horizontalDist, 2) + 2 * verticalDist * Math.pow(v, 2));
 
         // The quadratic has no real solutions if the discriminant < 0.
         if (discriminant < 0) {
@@ -94,9 +96,7 @@ public class ShooterCalculator {
             return 45; // Fallback angle
         }
 
-        double angleRad = Math.atan(
-                (Math.pow(v, 2) - Math.sqrt(discriminant)) /
-                        (g * horizontalDist));
+        double angleRad = Math.atan((Math.pow(v, 2) - Math.sqrt(discriminant)) / (g * horizontalDist));
 
         return Math.toDegrees(angleRad);
     }
@@ -104,7 +104,7 @@ public class ShooterCalculator {
     /**
      * Adds a RPM data point to the interpolating RPM map. Called during
      * testing/characterization.
-     * 
+     *
      * @param distance      The horizontal distance from the target.
      * @param successfulRPM The RPM of the motor.
      */
@@ -114,7 +114,7 @@ public class ShooterCalculator {
 
     /**
      * Returns the desired turret yaw.
-     * 
+     *
      * @return The yaw in degrees.
      */
     public double getDesiredTurretYaw() {
@@ -123,7 +123,7 @@ public class ShooterCalculator {
 
     /**
      * Returns the desired turret pitch.
-     * 
+     *
      * @return The pitch in degrees.
      */
     public double getDesiredTurretPitch() {
@@ -132,7 +132,7 @@ public class ShooterCalculator {
 
     /**
      * Returns the desired RPM of the motor.
-     * 
+     *
      * @return The desired RPM.
      */
     public double getDesiredRPM() {
@@ -141,7 +141,7 @@ public class ShooterCalculator {
 
     /**
      * Returns wether or not the shot possible.
-     * 
+     *
      * @return true if possible.
      */
     public boolean isShotFeasible() {

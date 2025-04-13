@@ -6,15 +6,13 @@ import edu.wpi.first.wpilibj.util.Color;
  * A wrapper class that provides conversions between RGB values and HSV values.
  */
 public class ExtendedColor {
-    /**
-     * The base Color object.
-     */
+    /** The base Color object. */
     public final Color color;
 
     /**
      * Creates a new ExtendedColor.
-     * 
-     * @param color the {@link Color} object to wrap
+     *
+     * @param color The {@link Color} object to wrap.
      */
     public ExtendedColor(Color color) {
         this.color = color;
@@ -22,8 +20,8 @@ public class ExtendedColor {
 
     /**
      * Gets the hue of the color.
-     * 
-     * @return the hue, from 0-180
+     *
+     * @return The hue, from 0-180.
      */
     public final int hue() {
         return RGBtoHSV(color.red, color.green, color.blue)[0];
@@ -31,8 +29,8 @@ public class ExtendedColor {
 
     /**
      * Gets the saturation of the color.
-     * 
-     * @return the saturation, from 0-255
+     *
+     * @return The saturation, from 0-255
      */
     public final int saturation() {
         return RGBtoHSV(color.red, color.green, color.blue)[1];
@@ -40,8 +38,8 @@ public class ExtendedColor {
 
     /**
      * Gets the value of the color.
-     * 
-     * @return the value, from 0-255
+     *
+     * @return The value, from 0-255
      */
     public final int value() {
         return RGBtoHSV(color.red, color.green, color.blue)[2];
@@ -49,8 +47,8 @@ public class ExtendedColor {
 
     /**
      * Gets the red value of the color.
-     * 
-     * @return the red value, from 0-255
+     *
+     * @return The red value, from 0-255
      */
     public final int red() {
         return (int) (color.red * 255);
@@ -58,8 +56,8 @@ public class ExtendedColor {
 
     /**
      * Gets the green value of the color.
-     * 
-     * @return the green value, from 0-255
+     *
+     * @return The green value, from 0-255
      */
     public final int green() {
         return (int) (color.green * 255);
@@ -67,8 +65,8 @@ public class ExtendedColor {
 
     /**
      * Gets the blue value of the color.
-     * 
-     * @return the blue value, from 0-255
+     *
+     * @return The blue value, from 0-255
      */
     public final int blue() {
         return (int) (color.blue * 255);
@@ -76,7 +74,7 @@ public class ExtendedColor {
 
     /**
      * Converts an RGB color to HSV.
-     * 
+     *
      * @param r The red value of the color [0-1].
      * @param g The green value of the color [0-1].
      * @param b The blue value of the color [0-1].
@@ -101,10 +99,6 @@ public class ExtendedColor {
         double saturation = (cMax == 0) ? 0 : delta / cMax;
 
         // Convert final values to correct range
-        return new int[] {
-                hue / 2,
-                (int) Math.round(saturation * 255),
-                (int) Math.round(cMax * 255) };
+        return new int[] {hue / 2, (int) Math.round(saturation * 255), (int) Math.round(cMax * 255)};
     }
-
 }

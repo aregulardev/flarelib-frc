@@ -10,18 +10,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * A preset LED subsystem.
- * 
+ *
  * <p>
  * To apply patterns, use the {@link LibLEDSubsystem#applyPatternRunnable}
  * method in order to apply the patterns correctly.
+ *
  * <p>
  * To apply a LEDPattern instance, use
  * {@link LEDPatterns#generateRunnableFromPattern}. The rest of the methods
  * already return Runnables.
- * 
- * <p><i>
- * Note: In order to use simulation, select <b>Hardware -> Addressable LEDs</b> from
- * the topbar in the simulation UI.
+ *
+ * <p>
+ * <i> Note: In order to use simulation, select <b>Hardware -> Addressable
+ * LEDs</b> from the topbar in the simulation UI.
  */
 public class LibLEDSubsystem extends SubsystemBase {
     private AddressableLED m_led;
@@ -34,7 +35,7 @@ public class LibLEDSubsystem extends SubsystemBase {
 
     /**
      * Constructs a new LibLEDSubsystem.
-     * 
+     *
      * @param ledPort      The port of the LED.
      * @param lengthPixels The length of the LED in pixels.
      * @param ledLength    The length of the LED.
@@ -51,7 +52,7 @@ public class LibLEDSubsystem extends SubsystemBase {
     /**
      * Constructs a new LibLEDSubsystem. Uses a default length of 60 pixels and a
      * linear pixel density of 60 pixels per meter.
-     * 
+     *
      * @param ledPort The port of the LED.
      */
     public LibLEDSubsystem(int ledPort) {
@@ -73,7 +74,7 @@ public class LibLEDSubsystem extends SubsystemBase {
 
     /**
      * Returns the pixel density of the LED, or how many pixels are in a meter.
-     * 
+     *
      * @return The density.
      */
     public double getLEDPixelDensity() {
@@ -82,7 +83,7 @@ public class LibLEDSubsystem extends SubsystemBase {
 
     /**
      * Returns the adressable LED.
-     * 
+     *
      * @return The LED.
      */
     public AddressableLED getLED() {
@@ -91,7 +92,7 @@ public class LibLEDSubsystem extends SubsystemBase {
 
     /**
      * Returns the adressable LED's buffer.
-     * 
+     *
      * @return The buffer.
      */
     public AddressableLEDBuffer getBuffer() {
@@ -101,7 +102,7 @@ public class LibLEDSubsystem extends SubsystemBase {
     /**
      * Returns the LED patterns class, which contains pattern presets and a method
      * to apply them.
-     * 
+     *
      * @return The patterns class.
      */
     public LEDPatterns getPatterns() {
@@ -110,23 +111,21 @@ public class LibLEDSubsystem extends SubsystemBase {
 
     /**
      * Applies the given buffer to the LED.
-     * 
+     *
      * @param customBuffer The custom buffer.
      */
     public void setLEDBuffer(AddressableLEDBuffer customBuffer) {
         m_led.setData(customBuffer);
     }
 
-    /**
-     * Resets the LED to a solid white color.
-     */
+    /** Resets the LED to a solid white color. */
     public void resetLED() {
         applyPatternRunnable(m_patterns.generateRunnableFromPattern(m_patterns.solid(Color.kWhite)));
     }
 
     /**
      * Applies a runnable to the LED.
-     * 
+     *
      * @param runnable The runnable function.
      */
     public void applyPatternRunnable(Runnable runnable) {

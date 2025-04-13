@@ -3,18 +3,16 @@ package com.flarerobotics.lib.led;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.function.DoubleSupplier;
-
 import com.flarerobotics.lib.container.DoubleContainer;
 import com.flarerobotics.lib.container.IntegerContainer;
-
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.DoubleSupplier;
 
 /** A container class holding LED patterns. */
 public class LEDPatterns {
@@ -22,7 +20,7 @@ public class LEDPatterns {
 
     /**
      * Constructs a new LEDPatterns.
-     * 
+     *
      * @param ledLinearDensity The linear density of the pixels of the LED.
      */
     public LEDPatterns(LibLEDSubsystem subsystem) {
@@ -31,12 +29,11 @@ public class LEDPatterns {
 
     /**
      * Applies the given pattern to the LED.
-     * 
+     *
      * @param pattern The pattern to apply.
      */
     public void apply(LEDPattern pattern) {
-        if (pattern == null)
-            return;
+        if (pattern == null) return;
         pattern.applyTo(m_subsystem.getBuffer());
         m_subsystem.getLED().setData(m_subsystem.getBuffer());
     }
@@ -46,11 +43,11 @@ public class LEDPatterns {
     //
 
     /**
-     * Applies a rainbow pattern to the LED subsystem. 
-     * 
+     * Applies a rainbow pattern to the LED subsystem.
+     *
      * @param brightness The brightness on a scale of 0-255.
      * @param saturation The saturation on a scale of 0-255.
-     * @param velocity The velocity in m/s. (use 1 for default)
+     * @param velocity   The velocity in m/s. (use 1 for default)
      */
     public LEDPattern rainbow(double velocity, int brightness, int saturation) {
         LEDPattern pattern = LEDPattern.rainbow(saturation, brightness);
@@ -60,7 +57,7 @@ public class LEDPatterns {
 
     /**
      * Applies a solid color to the LED subsystem.
-     * 
+     *
      * @param color The color.
      */
     public LEDPattern solid(Color color) {
@@ -69,8 +66,8 @@ public class LEDPatterns {
 
     /**
      * Creates a continuous gradient.
-     * 
-     * @param colors The colors to include.
+     *
+     * @param color The colors to include.
      * @return The gradient pattern.
      */
     public LEDPattern continuousGradient(Color... colors) {
@@ -79,7 +76,7 @@ public class LEDPatterns {
 
     /**
      * Creates a discontinuous gradient.
-     * 
+     *
      * @param colors The colors to include.
      * @return The gradient pattern.
      */
@@ -88,9 +85,11 @@ public class LEDPatterns {
     }
 
     /**
-     * Creates a steps gradient where solid colors are displayed seperately at sections.
-     * 
-     * @param steps The steps map, where the double is the point at which the section for the color starts, has the range [0, 1).
+     * Creates a steps gradient where solid colors are displayed seperately at
+     * sections.
+     *
+     * @param steps The steps map, where the double is the point at which the
+     *              section for the color starts, has the range [0, 1).
      * @return The steps pattern.
      */
     public LEDPattern steps(Map<Double, Color> steps) {
@@ -98,9 +97,10 @@ public class LEDPatterns {
     }
 
     /**
-     * Masks a progress bar on the pattern provided, where only the supplied percentage will be shown.
-     * 
-     * @param pattern The pattern to apply the mask to.
+     * Masks a progress bar on the pattern provided, where only the supplied
+     * percentage will be shown.
+     *
+     * @param pattern          The pattern to apply the mask to.
      * @param progressSupplier The percentage supplier.
      * @return The masked pattern.
      */
@@ -110,7 +110,7 @@ public class LEDPatterns {
 
     /**
      * Generates a runnable that applies the given pattern.
-     * 
+     *
      * @param pattern The pattern to apply.
      * @return The generated runnable.
      */
@@ -125,20 +125,22 @@ public class LEDPatterns {
     //
 
     /**
-    * Creates a pattern that triggers a bolt with a decreasing brightness tail across the LED.
-    * Cannot return a LEDPattern as the return value requires a consumer.
-    *
-    * To use, call the function once to obtain the runnable. 
-    * Then call the runnable periodically to update.
-    * 
-    * @param color    The color of the bolt.
-    * @param length   The length of the bolt.
-    * @param time     The amount of time to take to finish the movement of the bolt
-    *                 across the LED strip, and optionally the time after which to
-    *                 send a new bolt.
-    * @param multiple Whether to continuously send bolts or not.
-    * @return The generated LED buffer runnable.
-    */
+     * Creates a pattern that triggers a bolt with a decreasing brightness tail
+     * across the LED. Cannot return a LEDPattern as the return value requires a
+     * consumer.
+     *
+     * <p>
+     * To use, call the function once to obtain the runnable. Then call the runnable
+     * periodically to update.
+     *
+     * @param color    The color of the bolt.
+     * @param length   The length of the bolt.
+     * @param time     The amount of time to take to finish the movement of the bolt
+     *                 across the LED strip, and optionally the time after which to
+     *                 send a new bolt.
+     * @param multiple Whether to continuously send bolts or not.
+     * @return The generated LED buffer runnable.
+     */
     public Runnable bolt(Color color, double length, double time, boolean multiple) {
         DoubleContainer previousTime = new DoubleContainer(0);
         // store fractional changes in the movement
@@ -162,8 +164,7 @@ public class LEDPatterns {
             movementBuffer.m_value += elapsedTime * ((m_subsystem.getBuffer().getLength() + length) / time);
             if (movementBuffer.m_value > 1) {
                 startPoint.m_value += (int) movementBuffer.m_value;
-                if (multiple)
-                    startPoint.m_value %= (m_subsystem.getBuffer().getLength() + length);
+                if (multiple) startPoint.m_value %= (m_subsystem.getBuffer().getLength() + length);
                 movementBuffer.m_value %= 1;
             }
 
@@ -182,10 +183,11 @@ public class LEDPatterns {
     /**
      * Creates a pattern that moves a color between high and low brightness via a
      * sine wave, which looks like "breathing".
-     * 
-     * To use, call the function once to obtain the runnable. 
-     * Then call the runnable periodically to update.
-     * 
+     *
+     * <p>
+     * To use, call the function once to obtain the runnable. Then call the runnable
+     * periodically to update.
+     *
      * @param color         The color to breathe.
      * @param onTime        The amount of time, in seconds, that the strip should be
      *                      on for.
@@ -194,8 +196,7 @@ public class LEDPatterns {
      * @param maxBrightness The brightness at the highest point of the breath.
      * @return The generated LED buffer runnable.
      */
-    public Runnable breathe(Color color, double onTime,
-            int minBrightness, int maxBrightness) {
+    public Runnable breathe(Color color, double onTime, int minBrightness, int maxBrightness) {
         ExtendedColor extColor = new ExtendedColor(color);
 
         return () -> {
@@ -216,16 +217,15 @@ public class LEDPatterns {
     /**
      * Creates a pattern that creates a flickering effect similar to a fire, using a
      * specfic palette of colors. Algorithm derivative of Fire2012.
-     * 
-     * To use, call the function once to obtain the runnable. 
-     * Then call the runnable periodically to update.
-     * 
-     * @param sparking Percentage likelihood of a new spark being lit.
-     *                 higher chance = more roaring fire, lower chance = more
-     *                 flickery fire [0-1].
-     * @param cooling  How much the air cools as it rises.
-     *                 less cooling = taller flames, more cooling = shorter flames.
-     *                 [0-1].
+     *
+     * <p>
+     * To use, call the function once to obtain the runnable. Then call the runnable
+     * periodically to update.
+     *
+     * @param sparking Percentage likelihood of a new spark being lit. higher chance
+     *                 = more roaring fire, lower chance = more flickery fire [0-1].
+     * @param cooling  How much the air cools as it rises. less cooling = taller
+     *                 flames, more cooling = shorter flames. [0-1].
      * @param colors   The list of colors to interpolate between. the first color
      *                 indicates the lowest temperature (typically black), and the
      *                 last color indicates the highest temperature. A palette
@@ -240,8 +240,14 @@ public class LEDPatterns {
         return () -> {
             // Cool down every cell a little
             for (int i = 0; i < m_subsystem.getBuffer().getLength(); i++) {
-                heat[i] = Math.max(0,
-                        heat[i] - random.nextInt((int) (cooling * 10 * 255 / m_subsystem.getBuffer().getLength()) + 2));
+                heat[i] = Math.max(
+                        0,
+                        heat[i]
+                                - random.nextInt((int) (cooling
+                                                * 10
+                                                * 255
+                                                / m_subsystem.getBuffer().getLength())
+                                        + 2));
             }
 
             // Heat from each cell drifts 'up' and diffuses a little
@@ -257,13 +263,14 @@ public class LEDPatterns {
 
             // // Convert heat to LED colors
 
-            for (int i = 0, j = 0; i < m_subsystem.getBuffer().getLength()
-                    && j < m_subsystem.getBuffer().getLength(); i++, j++) {
+            for (int i = 0, j = 0;
+                    i < m_subsystem.getBuffer().getLength()
+                            && j < m_subsystem.getBuffer().getLength();
+                    i++, j++) {
                 Color color = interpolateHeat(heat[i], colors);
                 if (sectionInverted)
                     m_subsystem.getBuffer().setLED(m_subsystem.getBuffer().getLength() - i, color);
-                else
-                    m_subsystem.getBuffer().setLED(j, color);
+                else m_subsystem.getBuffer().setLED(j, color);
             }
         };
     }
@@ -271,7 +278,7 @@ public class LEDPatterns {
     /**
      * Interpolates a fire color based on a palette of colors, from a heat value
      * from 0-255.
-     * 
+     *
      * @param heat   The "heat" value as a temperature [0-255].
      * @param colors The colors to use in the interpolation. the first color is the
      *               lowest heat, and the last color is the highest heat. A good
@@ -291,7 +298,7 @@ public class LEDPatterns {
         Color color2 = colors.get(Math.min(index + 1, colors.size() - 1));
 
         double red = interpolate(color1.red, color2.red, t);
-        double green =interpolate(color1.green, color2.green, t);
+        double green = interpolate(color1.green, color2.green, t);
         double blue = interpolate(color1.blue, color2.blue, t);
 
         return new Color(red, green, blue);

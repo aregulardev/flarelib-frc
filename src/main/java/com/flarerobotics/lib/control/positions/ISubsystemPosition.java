@@ -6,13 +6,14 @@ import edu.wpi.first.units.measure.Distance;
 
 /**
  * An interface allowing users to have a custom enum of subsystem positions.
+ *
  * <p>
  * Useful for storing arm positions along with the elevator positions.
  */
 public interface ISubsystemPosition {
     /**
      * For linear mechanism positions.
-     * 
+     *
      * @return The system height.
      */
     default Distance getHeight() {
@@ -21,8 +22,9 @@ public interface ISubsystemPosition {
 
     /**
      * For position-controlled subsystem positions.
-     * 
-     * @param key The getter key.
+     *
+     * @param key
+     *            The getter key.
      * @return The system height.
      */
     default Distance getHeight(String key) {
@@ -31,7 +33,7 @@ public interface ISubsystemPosition {
 
     /**
      * For position-controlled subsystem positions.
-     * 
+     *
      * @return The system's angle in degrees.
      */
     default double getAngle() {
@@ -40,8 +42,9 @@ public interface ISubsystemPosition {
 
     /**
      * For position-controlled subsystem positions.
-     * 
-     * @param key The getter key.
+     *
+     * @param key
+     *            The getter key.
      * @return The system's angle in degrees.
      */
     default double getAngle(String key) {
@@ -50,7 +53,7 @@ public interface ISubsystemPosition {
 
     /**
      * For angular velocity-controlled subsystem positions.
-     * 
+     *
      * @return The system's RPM.
      */
     default double getRPM() {
@@ -59,7 +62,7 @@ public interface ISubsystemPosition {
 
     /**
      * For angular velocity-controlled subsystem positions.
-     * 
+     *
      * @return The system's RPM.
      */
     default double getRPM(String key) {

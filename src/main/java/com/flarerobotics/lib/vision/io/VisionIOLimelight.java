@@ -1,20 +1,18 @@
 package com.flarerobotics.lib.vision.io;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import com.flarerobotics.lib.vision.LimelightHelpers;
 import com.flarerobotics.lib.vision.VisionIO;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /** IO implementation for real Limelight hardware. */
 public class VisionIOLimelight implements VisionIO {
@@ -58,8 +56,8 @@ public class VisionIOLimelight implements VisionIO {
     public void updateInputs(VisionIOInputs inputs) {
         // Update connection status based on whether an update has been seen in the
         // given time range
-        inputs.isCameraConnected = ((RobotController.getFPGATime() - m_latencySubscriber.getLastChange())
-                / 1000) < kLatencyTimeoutMs;
+        inputs.isCameraConnected =
+                ((RobotController.getFPGATime() - m_latencySubscriber.getLastChange()) / 1000) < kLatencyTimeoutMs;
 
         // Update target observation
         inputs.latestTargetObservation = new TargetObservation(
@@ -78,19 +76,25 @@ public class VisionIOLimelight implements VisionIO {
         // LimelightHelpers.getBotPose(String, String boolean) uses Pose2d instead of
         // Pose3d.
         for (var rawSample : m_megatag2Subscriber.readQueue()) {
-            if (rawSample.value.length == 0)
-                continue;
+            if (rawSample.value.length == 0) continue;
             for (int i = kTagDataStartIndex; i < rawSample.value.length; i += kValsPerSample) {
                 tagIDs.add((int) rawSample.value[i]);
             }
-            poseObservations.add(
-                    new PoseObservation(
-                            rawSample.timestamp * 1e-6 - rawSample.value[kLaterncyIndex] * 1e-3, // Timestamp, based on server timestamp of publish and latency
-                            LimelightHelpers.toPose3D(rawSample.value), // 3D pose estimate
-                            0.0, // Ambiguity, zeroed because the pose is already disambiguated
-                            (int) rawSample.value[kTagCountIndex], // Tag count
-                            rawSample.value[kAverageTagDistIndex], // Average tag distance
-                            PoseObservationType.MEGATAG_2 // Observation type
+            poseObservations.add(new PoseObservation(
+                    rawSample.timestamp * 1e-6 - rawSample.value[kLaterncyIndex] * 1e-3, // Timestamp,
+                    // based
+                    // on
+                    // server
+                    // timestamp
+                    // of
+                    // publish
+                    // and
+                    // latency
+                    LimelightHelpers.toPose3D(rawSample.value), // 3D pose estimate
+                    0.0, // Ambiguity, zeroed because the pose is already disambiguated
+                    (int) rawSample.value[kTagCountIndex], // Tag count
+                    rawSample.value[kAverageTagDistIndex], // Average tag distance
+                    PoseObservationType.MEGATAG_2 // Observation type
                     ));
         }
 

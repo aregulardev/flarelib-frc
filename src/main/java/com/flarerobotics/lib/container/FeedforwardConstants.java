@@ -4,25 +4,19 @@ package com.flarerobotics.lib.container;
 public class FeedforwardConstants {
     public final double kS, kV, kA;
 
-    /**
-     * Constructs a new FeedforwardConstants.
-     */
+    /** Constructs a new FeedforwardConstants. */
     public FeedforwardConstants(double kS, double kV, double kA) {
         this.kS = kS;
         this.kV = kV;
         this.kA = kA;
     }
 
-    /**
-     * Constructs a new FeedforwardConstants.
-     */
+    /** Constructs a new FeedforwardConstants. */
     public FeedforwardConstants(double kV, double kA) {
         this(0, kV, kA);
     }
 
-    /**
-     * Constructs a new FeedforwardConstants.
-     */
+    /** Constructs a new FeedforwardConstants. */
     public FeedforwardConstants(double kA) {
         this(kA, 0, 0);
     }

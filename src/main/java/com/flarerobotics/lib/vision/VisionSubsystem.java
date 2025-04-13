@@ -2,14 +2,8 @@ package com.flarerobotics.lib.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.littletonrobotics.junction.Logger;
-
 import com.flarerobotics.lib.RectangularRegion;
 import com.flarerobotics.lib.vision.VisionIO.PoseObservationType;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -24,6 +18,9 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.LinkedList;
+import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
 // Code modified from the AdvantageKit vision template.
 
@@ -38,14 +35,14 @@ public class VisionSubsystem extends SubsystemBase {
     private final Alert[] m_disconnectedAlerts;
 
     public static final AprilTagFieldLayout kLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final RectangularRegion kFieldRegion = new RectangularRegion(new Translation2d(0.0, 0.0),
+    public static final RectangularRegion kFieldRegion = new RectangularRegion(
+            new Translation2d(0.0, 0.0),
             new Translation2d(kLayout.getFieldLength(), kLayout.getFieldWidth())); // 2025 Field Size
 
     // Subsystem configuration variables
     private double[] m_cameraStdDevFactors;
     // Unit: Meters (m)
-    private double m_maxHeight = 1,
-            m_maxAmbiguity = 0.3;
+    private double m_maxHeight = 1, m_maxAmbiguity = 0.3;
     // Standard deviation baselines, for 1 meter distance and 1 tag.
     // Is adjusted automatically based on distance and the number of tags.
     // Units: Meters (m), Radians (rads) respectively.
@@ -77,8 +74,7 @@ public class VisionSubsystem extends SubsystemBase {
         m_disconnectedAlerts = new Alert[cameras.length];
         for (int i = 0; i < m_inputs.length; i++) {
             m_disconnectedAlerts[i] = new Alert(
-                    "Vision camera with index '" + Integer.toString(i) + "'' is disconnected.",
-                    AlertType.kWarning);
+                    "Vision camera with index '" + Integer.toString(i) + "'' is disconnected.", AlertType.kWarning);
         }
     }
 
@@ -104,20 +100,19 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Returns wether the vision detects a valid target.
-     * 
+     *
      * @return True if a valid target is detected.
      */
     public boolean getTV() {
         for (int i = 0; i < m_inputs.length; i++) {
-            if (m_inputs[i].tagIDs.length != 0)
-                return true;
+            if (m_inputs[i].tagIDs.length != 0) return true;
         }
         return false;
     }
 
     /**
      * Returns wether the vision detects a valid target.
-     * 
+     *
      * @param cameraIndex The index of the camera.
      * @return True if a valid target is detected.
      */
@@ -162,8 +157,9 @@ public class VisionSubsystem extends SubsystemBase {
             for (var observation : m_inputs[cameraIndex].poseObservations) {
                 // Check whether to reject pose mesaurement
                 boolean rejectPose = observation.tagCount() == 0 // Visible tag check
-                        || (observation.tagCount() == 1
-                                && observation.ambiguity() > m_maxAmbiguity) // Ambiguity threshold with 1 tag
+                        || (observation.tagCount() == 1 && observation.ambiguity() > m_maxAmbiguity) // Ambiguity
+                        // threshold
+                        // with 1 tag
                         || Math.abs(observation.pose().getZ()) > m_maxHeight // Height limit threshold
                         || !kFieldRegion.isPoseWithinArea(observation.pose().toPose2d()); // Field boundary check
 
@@ -221,20 +217,17 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Log summary data
         Logger.recordOutput("Vision/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
+        Logger.recordOutput("Vision/RobotPoses", allRobotPoses.toArray(new Pose3d[allRobotPoses.size()]));
         Logger.recordOutput(
-                "Vision/RobotPoses", allRobotPoses.toArray(new Pose3d[allRobotPoses.size()]));
+                "Vision/RobotPosesAccepted", allRobotPosesAccepted.toArray(new Pose3d[allRobotPosesAccepted.size()]));
         Logger.recordOutput(
-                "Vision/RobotPosesAccepted",
-                allRobotPosesAccepted.toArray(new Pose3d[allRobotPosesAccepted.size()]));
-        Logger.recordOutput(
-                "Vision/RobotPosesRejected",
-                allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
+                "Vision/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
     }
 
     /**
      * Sets the height threshold (invalidation point) for the vision pose. Defaults
      * to 1 meter.
-     * 
+     *
      * @param height The max height.
      */
     public void setMaxHeight(Distance height) {
@@ -243,7 +236,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Sets the maximum ambiguity for the robot's pose. Defaults to 0.3.
-     * 
+     *
      * @param max The maximum ambiguity.
      */
     public void setMaxAmbiguity(double max) {
@@ -252,11 +245,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Sets the baseline for the linear standard deviations. Defaults to 0.02.
-     * 
+     *
      * <p>
-     * Standard deviations are for 1 meter distance and 1 tag.
-     * Is adjusted automatically based on distance and the number of tags.
-     * 
+     * Standard deviations are for 1 meter distance and 1 tag. Is adjusted
+     * automatically based on distance and the number of tags.
+     *
      * @param baseline The baseline.
      */
     public void setLinearStdDevBaseline(double baseline) {
@@ -265,11 +258,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Sets the baseline for the angular standard deviations. Defaults to 0.06.
-     * 
+     *
      * <p>
-     * Standard deviations are for 1 meter distance and 1 tag.
-     * Is adjusted automatically based on distance and the number of tags.
-     * 
+     * Standard deviations are for 1 meter distance and 1 tag. Is adjusted
+     * automatically based on distance and the number of tags.
+     *
      * @param baseline The baseline.
      */
     public void setAngularStdDevBaseline(double baseline) {
@@ -278,7 +271,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Sets the linear deviations factor applied for MegaTag2. Defaults to 0.5.
-     * 
+     *
      * @param factor The factor.
      */
     public void setLinearStdDevFactor_MT2(double factor) {
@@ -288,7 +281,7 @@ public class VisionSubsystem extends SubsystemBase {
     /**
      * Sets the angular standard deviations factor applied for MegaTag2. Defaults to
      * Infinity.
-     * 
+     *
      * @param factor The factor.
      */
     public void setAngularStdDevFactor_MT2(double factor) {
@@ -298,7 +291,7 @@ public class VisionSubsystem extends SubsystemBase {
     /**
      * Sets the standard deviation factors for each camera in the same order it was
      * provided in the constructor.
-     * 
+     *
      * @param factors The factors.
      */
     public void setCameraStdDevFactors(double[] factors) {
@@ -311,8 +304,6 @@ public class VisionSubsystem extends SubsystemBase {
     @FunctionalInterface
     public static interface VisionConsumer {
         public void accept(
-                Pose2d visionRobotPoseMeters,
-                double timestampSeconds,
-                Matrix<N3, N1> visionMeasurementStdDevs);
+                Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);
     }
 }
