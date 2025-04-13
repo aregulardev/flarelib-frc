@@ -122,16 +122,17 @@ gversion {
     classPackage = "frc.robot"
     className    = "BuildConstants"
     dateFormat   = "yyyy-MM-dd HH:mm:ss z"
-    timeZone     = "GMT" // "America/New_York"
+    timeZone     = "GMT+3" // "America/New_York"
     indent       = "  "
 }
 
 // Create commit with working changes on event branches
 task(eventDeploy) {
     doLast {
+        def taskToSearch = "deploy" // build
         // Check if a deploy task is running before running the task
-        if (project.gradle.startParameter.taskNames.any({ it.toLowerCase().contains("deploy") })) {
-            def branchPrefix = "robot-build" // A generic build branch, must manually push to branch "main".
+        if (project.gradle.startParameter.taskNames.any({ it.toLowerCase().contains(taskToSearch) })) {
+            def branchPrefix = "robot-deploy" // A generic build branch, must manually push to branch "main".
             def branch = 'git branch --show-current'.execute().text.trim() // Get clean branch name
             def commitMessage = "Update at '${new Date().toString()}'" // Update date text for the commit message
 
@@ -156,7 +157,7 @@ task(eventDeploy) {
                 println "Committed to branch: '$branch'"
                 println "Commit message: '$commitMessage'"
             } else {
-                println "Not on an event branch, skipping commit"
+                println "Not on a deploy branch, skipping commit"
             }
         } else {
             println "Not running deploy task, skipping commit"
