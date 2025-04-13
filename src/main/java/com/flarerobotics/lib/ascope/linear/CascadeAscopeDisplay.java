@@ -104,17 +104,10 @@ public class CascadeAscopeDisplay {
     }
 
     /**
-     * Returns the pose of the specified stage (1 = top stage).
-     * <p>
-     * Internally:
-     * <p>
-     * 1) Clamp the raw sensor height so we don't exceed (maxHeight - offset).
-     * <p>
-     * 2) Multiply by (reversedStage / m_stages).
-     * <p>
-     * 3) Add the offset baseline.
-     * <p>
-     * 4) Clamp again to ensure we never exceed maxHeight.
+     * Returns the pose of the specified stage.
+     * 
+     * @param stage The stage number (1 = carriage).
+     * @return The AdvantageScope zero-position relative pose.
      */
     public Pose3d getStagePose(int stage) {
         if (stage < 1 || stage > m_stages) {

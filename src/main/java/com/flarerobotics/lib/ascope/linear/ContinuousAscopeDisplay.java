@@ -16,9 +16,9 @@ import edu.wpi.first.math.geometry.Translation3d;
  * 
  * <p>
  * First, the carriage moves, but this doesn't affect any other stages. Then,
- * stage 2 raises and moves all the higer stages. This goes on for all other
- * stages. And this assumes that the carriage is attached to the last stage of
- * the elevator.
+ * stage 2 raises and moves all the higer stages and the carriage. This goes on
+ * for all other stages. And this assumes that the carriage is attached to the
+ * last stage of the elevator.
  * 
  * <p>
  * NOTE: The height is based off the carriage.

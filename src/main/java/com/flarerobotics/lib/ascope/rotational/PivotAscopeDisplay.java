@@ -14,7 +14,7 @@ import edu.wpi.first.math.geometry.Translation3d;
  * them to Network Tables (via Akit Logger) for visualization in AdvantageScope.
  * 
  * <p>
- * Note: Use {@link #ArmAscopeDisplay(String, Supplier, double, Supplier)} with
+ * Note: Use {@link #PivotAscopeDisplay(String, Supplier, double, Supplier)} with
  * length = 0 for a pivot display.
  */
 public class PivotAscopeDisplay {
