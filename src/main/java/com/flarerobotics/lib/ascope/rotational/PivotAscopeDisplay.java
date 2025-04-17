@@ -1,18 +1,16 @@
 package com.flarerobotics.lib.ascope.rotational;
 
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Simulates an arm / pivot and calculates joint positions, publishing
  * them to Network Tables (via Akit Logger) for visualization in AdvantageScope.
- * 
+ *
  * <p>
  * Note: Use {@link #PivotAscopeDisplay(String, Supplier, double, Supplier)} with
  * length = 0 for a pivot display.
@@ -37,7 +35,7 @@ public class PivotAscopeDisplay {
 
     /**
      * Constructs a new PivotAscopeDisplay.
-     * 
+     *
      * @param name                 The name of the system.
      * @param basePose             The pose supplier for the root of the arm.
      * @param segmentLengthsMeters The length of each joint.
@@ -45,7 +43,10 @@ public class PivotAscopeDisplay {
      * @param extensionSupplier    The extensions supplier in meters, used for
      *                             telescoping / extending arms.
      */
-    public PivotAscopeDisplay(String name, Supplier<Pose3d> basePose, double[] segmentLengthsMeters,
+    public PivotAscopeDisplay(
+            String name,
+            Supplier<Pose3d> basePose,
+            double[] segmentLengthsMeters,
             Supplier<Rotation3d[]> jointAnglesRads,
             Supplier<Double[]> extensionSupplier) {
         /*
@@ -66,7 +67,7 @@ public class PivotAscopeDisplay {
 
     /**
      * Constructs a single-jointed new PivotAscopeDisplay.
-     * 
+     *
      * @param name              The name of the system.
      * @param basePose          The pose supplier for the root of the arm.
      * @param length            The length of the arm in meters.
@@ -74,38 +75,42 @@ public class PivotAscopeDisplay {
      * @param extensionSupplier The extensions supplier in meters, used for
      *                          telescoping / extending arms.
      */
-    public PivotAscopeDisplay(String name, Supplier<Pose3d> basePose, double length,
+    public PivotAscopeDisplay(
+            String name,
+            Supplier<Pose3d> basePose,
+            double length,
             Supplier<Rotation3d> angleSupplier,
             Supplier<Double> extensionSupplier) {
-        this(name, basePose, new double[] { length }, () -> new Rotation3d[] { angleSupplier.get() },
-                () -> new Double[] { extensionSupplier.get() });
+        this(name, basePose, new double[] {length}, () -> new Rotation3d[] {angleSupplier.get()}, () ->
+                new Double[] {extensionSupplier.get()});
     }
 
     /**
      * Constructs a single-jointed new PivotAscopeDisplay.
-     * 
+     *
      * <p>
      * Note: Use length = 0 for pivot.
-     * 
+     *
      * @param name          The name of the system.
      * @param basePose      The pose supplier for the root of the arm.
      * @param length        The length of the arm in meters.
      * @param angleSupplier The supplier for the arm angle, in radians.
      */
-    public PivotAscopeDisplay(String name, Supplier<Pose3d> basePose, double length,
-            Supplier<Rotation3d> angleSupplier) {
-        this(name, basePose, new double[] { length }, () -> new Rotation3d[] { angleSupplier.get() },
-                () -> new Double[] { 0.0 });
+    public PivotAscopeDisplay(
+            String name, Supplier<Pose3d> basePose, double length, Supplier<Rotation3d> angleSupplier) {
+        this(name, basePose, new double[] {length}, () -> new Rotation3d[] {angleSupplier.get()}, () ->
+                new Double[] {0.0});
     }
 
     /**
      * Computes the final pose of the arm's end effector using forward kinematics.
-     * 
+     *
      * @return The pose of the end effector.
      */
     public Pose3d computeEndEffectorPose() {
         if (m_extensionSupplier.get().length != m_jointAngles.get().length
-                || m_extensionSupplier.get().length != m_jointCount || m_jointAngles.get().length != m_jointCount) {
+                || m_extensionSupplier.get().length != m_jointCount
+                || m_jointAngles.get().length != m_jointCount) {
             throw new IllegalArgumentException("Invalid length parameters provided to PivotAscopeDisplay");
         }
 
@@ -149,7 +154,8 @@ public class PivotAscopeDisplay {
      */
     public Pose3d getJointPose(int joint, Transform3d offset) {
         if (m_extensionSupplier.get().length != m_jointAngles.get().length
-                || m_extensionSupplier.get().length != m_jointCount || m_jointAngles.get().length != m_jointCount) {
+                || m_extensionSupplier.get().length != m_jointCount
+                || m_jointAngles.get().length != m_jointCount) {
             throw new IllegalArgumentException("Invalid length parameters provided to PivotAscopeDisplay");
         }
 
@@ -201,14 +207,12 @@ public class PivotAscopeDisplay {
      * Updates the Network Table outputs. Data is stored in the path as a Pose3d:
      * <p>
      * <code>Simulation/{SYSTEM_NAME}Arm/Joint{I}/Pose</code>
-     * 
+     *
      * @param offset The offset to apply to each joint.
      */
     public void update(Transform3d offset) {
         for (int j = 1; j <= m_jointCount; j++) {
-            Logger.recordOutput(
-                    "Simulation/" + m_name + "Arm/Joint" + j + "/Pose",
-                    getJointPose(j, offset));
+            Logger.recordOutput("Simulation/" + m_name + "Arm/Joint" + j + "/Pose", getJointPose(j, offset));
         }
     }
 
@@ -216,14 +220,12 @@ public class PivotAscopeDisplay {
      * Updates the Network Table outputs. Data is stored in the path as a Pose3d:
      * <p>
      * <code>Simulation/{SYSTEM_NAME}Arm/Joint{I}/Pose</code>
-     * 
+     *
      * @param offsets The offsets to apply to each joint.
      */
     public void update(Transform3d[] offsets) {
         for (int j = 1; j <= m_jointCount; j++) {
-            Logger.recordOutput(
-                    "Simulation/" + m_name + "Arm/Joint" + j + "/Pose",
-                    getJointPose(j, offsets[j-1]));
+            Logger.recordOutput("Simulation/" + m_name + "Arm/Joint" + j + "/Pose", getJointPose(j, offsets[j - 1]));
         }
     }
 
@@ -234,15 +236,13 @@ public class PivotAscopeDisplay {
      */
     public void update() {
         for (int j = 1; j <= m_jointCount; j++) {
-            Logger.recordOutput(
-                    "Simulation/" + m_name + "Arm/Joint" + j + "/Pose",
-                    getJointPose(j));
+            Logger.recordOutput("Simulation/" + m_name + "Arm/Joint" + j + "/Pose", getJointPose(j));
         }
     }
 
     /**
      * Attaches a mechanism to end of the arm.
-     * 
+     *
      * @param offset The offset from the end, uses a supplier because attached
      *               mechanisms generally move or rotate. Generally used to supply
      *               rotational offsets.

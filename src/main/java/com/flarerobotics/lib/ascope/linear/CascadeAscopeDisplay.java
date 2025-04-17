@@ -1,14 +1,12 @@
 package com.flarerobotics.lib.ascope.linear;
 
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Simulates a cascade elevator and calculates stage positions, publishing them
@@ -18,7 +16,7 @@ import edu.wpi.first.math.geometry.Translation3d;
  * Model:
  * If N stages are present (N >= 1) and the elevator's "raw" height is h,
  * then the i'th stage gets a fraction of h:
- * (i / N) * h.
+ * ((N - i + 1) / N) * h.
  */
 public class CascadeAscopeDisplay {
     private final int m_stages;
@@ -64,7 +62,7 @@ public class CascadeAscopeDisplay {
 
     /**
      * Constructs a new CascadeAscopeDisplay with an upright elevator (no tilt).
-     * 
+     *
      * @param name                    The name of the system.
      * @param stages                  The number of stages in the elevator (>= 1).
      * @param offsetMeters            A baseline offset (in meters). Often used if
@@ -81,13 +79,7 @@ public class CascadeAscopeDisplay {
             double offsetMeters,
             Supplier<Double> heightSupplierMeters,
             double elevatorMaxHeightMeters) {
-        this(
-                name,
-                stages,
-                offsetMeters,
-                heightSupplierMeters,
-                () -> Rotation3d.kZero,
-                elevatorMaxHeightMeters);
+        this(name, stages, offsetMeters, heightSupplierMeters, () -> Rotation3d.kZero, elevatorMaxHeightMeters);
     }
 
     /**
@@ -97,15 +89,13 @@ public class CascadeAscopeDisplay {
      */
     public void update() {
         for (int i = 1; i <= m_stages; i++) {
-            Logger.recordOutput(
-                    "Simulation/" + m_name + "Elevator/Stage" + i + "/Pose",
-                    getStagePose(i));
+            Logger.recordOutput("Simulation/" + m_name + "Elevator/Stage" + i + "/Pose", getStagePose(i));
         }
     }
 
     /**
      * Returns the pose of the specified stage.
-     * 
+     *
      * @param stage The stage number (1 = carriage).
      * @return The AdvantageScope zero-position relative pose.
      */
@@ -119,10 +109,8 @@ public class CascadeAscopeDisplay {
         int reversedStage = m_stages - stage + 1;
 
         // 1) Clamp raw height to avoid overshooting once offset is added.
-        double rawHeight = MathUtil.clamp(
-                m_heightMeters.get() + m_offset,
-                0,
-                Math.max(0.0, m_elevatorMaxHeight + m_offset));
+        double rawHeight =
+                MathUtil.clamp(m_heightMeters.get() + m_offset, 0, Math.max(0.0, m_elevatorMaxHeight + m_offset));
 
         // 2) Compute fraction for this stage (top stage gets fraction=1.0, bottom stage
         // fraction=1/m_stages).
@@ -136,15 +124,14 @@ public class CascadeAscopeDisplay {
         zHeight = MathUtil.clamp(zHeight, 0, m_elevatorMaxHeight);
 
         // Create the Pose3d at zHeight, rotated by m_angle.
-        return new Pose3d().transformBy(
-                new Transform3d(
-                        new Translation3d(0.0, 0.0, zHeight).rotateBy(m_angle.get()),
-                        m_angle.get()));
+        return new Pose3d()
+                .transformBy(
+                        new Transform3d(new Translation3d(0.0, 0.0, zHeight).rotateBy(m_angle.get()), m_angle.get()));
     }
 
     /**
      * Attaches a mechanism to the carriage.
-     * 
+     *
      * @param offset The offset from the carriage, uses a supplier because attached
      *               mechanisms generally move or rotate. Generally used to supply
      *               rotational offsets.
