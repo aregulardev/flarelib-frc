@@ -1,9 +1,12 @@
 package com.flarerobotics.lib;
 
+import java.lang.reflect.Field;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.IterativeRobotBase;
+import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /** A static utility class for generic functions. */
 public class Utils {
@@ -25,15 +28,44 @@ public class Utils {
     }
 
     /**
-     * Rotates the current pose around a point in 3D space.
-     *
-     * @param point The point in 3D space to rotate around.
-     * @param rot   The rotation to rotate the pose by.
-     * @return The new rotated pose.
+     * Disables the "command loop overrun" warning.
+     * 
+     * @param robot The main "Robot.java" class.
+     * @return True if successful.
      */
-    public static Pose3d rotateAround(Pose3d currentPose, Translation3d point, Rotation3d rot) {
-        return new Pose3d(
-                currentPose.getTranslation().rotateAround(point, rot),
-                currentPose.getRotation().rotateBy(rot));
+    public static boolean disableLoopOverrunWarnings(IterativeRobotBase robot) {
+        try {
+            Field field = IterativeRobotBase.class.getField("m_watchdog");
+            field.setAccessible(true);
+            ((Watchdog) field.get(robot)).disable();
+            System.out.println("Command loop overrun warnings have been disabled.");
+            return true;
+        } catch (Exception ex) {
+            DriverStation.reportWarning(
+                    "Unable to disable command loop overrun warnings with exception: " + ex.getStackTrace(), false);
+            return false;
+        }
+    }
+
+    /**
+     * Sets the duration before a "command loop overrun" warning is thrown.
+     * 
+     * @param robot   The main "Robot.java" class.
+     * @param timeout The timeout in seconds.
+     * @return True if successful.
+     */
+    public static boolean setLoopOverrunTimeout(IterativeRobotBase robot, double timeout) {
+        try {
+            Field field = IterativeRobotBase.class.getField("m_watchdog");
+            field.setAccessible(true);
+            ((Watchdog) field.get(robot)).setTimeout(timeout);
+            CommandScheduler.getInstance().setPeriod(timeout);
+            System.out.println("Command loop overrun warnings have been set to a timeout of " + timeout + ".");
+            return true;
+        } catch (Exception ex) {
+            DriverStation.reportWarning(
+                    "Unable to set command loop overrun warning timeouts with exception: " + ex.getStackTrace(), false);
+            return false;
+        }
     }
 }
