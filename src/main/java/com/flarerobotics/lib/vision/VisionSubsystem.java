@@ -2,8 +2,14 @@ package com.flarerobotics.lib.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.flarerobotics.lib.RectangularRegion;
 import com.flarerobotics.lib.vision.VisionIO.PoseObservationType;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -18,9 +24,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.LinkedList;
-import java.util.List;
-import org.littletonrobotics.junction.Logger;
 
 // Code modified from the AdvantageKit vision template.
 
@@ -76,48 +79,6 @@ public class VisionSubsystem extends SubsystemBase {
             m_disconnectedAlerts[i] = new Alert(
                     "Vision camera with index '" + Integer.toString(i) + "'' is disconnected.", AlertType.kWarning);
         }
-    }
-
-    /**
-     * Returns the X angle to the best target, which can be used for simple servoing
-     * with vision.
-     *
-     * @param cameraIndex The index of the camera to use.
-     */
-    public Rotation2d getTX(int cameraIndex) {
-        return m_inputs[cameraIndex].latestTargetObservation.tx();
-    }
-
-    /**
-     * Returns the Y angle to the best target, which can be used for simple servoing
-     * with vision.
-     *
-     * @param cameraIndex The index of the camera to use.
-     */
-    public Rotation2d getTY(int cameraIndex) {
-        return m_inputs[cameraIndex].latestTargetObservation.ty();
-    }
-
-    /**
-     * Returns wether the vision detects a valid target.
-     *
-     * @return True if a valid target is detected.
-     */
-    public boolean getTV() {
-        for (int i = 0; i < m_inputs.length; i++) {
-            if (m_inputs[i].tagIDs.length != 0) return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns wether the vision detects a valid target.
-     *
-     * @param cameraIndex The index of the camera.
-     * @return True if a valid target is detected.
-     */
-    public boolean getTV(int cameraIndex) {
-        return m_inputs[cameraIndex].tagIDs.length != 0;
     }
 
     @Override
@@ -222,6 +183,67 @@ public class VisionSubsystem extends SubsystemBase {
                 "Vision/RobotPosesAccepted", allRobotPosesAccepted.toArray(new Pose3d[allRobotPosesAccepted.size()]));
         Logger.recordOutput(
                 "Vision/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
+    }
+
+
+    /**
+     * Returns the X angle to the best target, which can be used for simple servoing
+     * with vision.
+     *
+     * @param cameraIndex The index of the camera to use.
+     */
+    public Rotation2d getTX(int cameraIndex) {
+        return m_inputs[cameraIndex].latestTargetObservation.tx();
+    }
+
+    /**
+     * Returns the Y angle to the best target, which can be used for simple servoing
+     * with vision.
+     *
+     * @param cameraIndex The index of the camera to use.
+     */
+    public Rotation2d getTY(int cameraIndex) {
+        return m_inputs[cameraIndex].latestTargetObservation.ty();
+    }
+
+    /**
+     * Returns wether the vision detects a valid target.
+     *
+     * @return True if a valid target is detected.
+     */
+    public boolean getTV() {
+        for (int i = 0; i < m_inputs.length; i++) {
+            if (m_inputs[i].tagIDs.length != 0) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns wether the vision detects a valid target.
+     *
+     * @param cameraIndex The index of the camera.
+     * @return True if a valid target is detected.
+     */
+    public boolean getTV(int cameraIndex) {
+        return m_inputs[cameraIndex].tagIDs.length != 0;
+    }
+
+    /**
+     * Returns the cameras as an IO interface array.
+     * 
+     * @return The camera array.
+     */
+    public VisionIO[] getCamerasIO() {
+        return m_cameras;
+    }
+
+    /**
+     * Returns the camera inputs.
+     * 
+     * @return The input array.
+     */
+    public VisionIOInputsAutoLogged[] getCameraInputs() {
+        return m_inputs;
     }
 
     /**
