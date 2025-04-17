@@ -144,7 +144,7 @@ task(githubDeploy) {
         def taskToSearch = "deploy" // build
         // Check if a deploy task is running before running the task
         if (project.gradle.startParameter.taskNames.any({ it.toLowerCase().contains(taskToSearch) })) {
-            def branchPrefix = "robot-deploy" // A generic build branch, must manually push to branch "main".
+            def branchPrefix = "event" // A generic build branch, must manually push to branch "main".
             def branch = 'git branch --show-current'.execute().text.trim() // Get clean branch name
             def commitMessage = "Update at '${new Date().toString()}'" // Update date text for the commit message
 
