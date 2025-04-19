@@ -2,14 +2,8 @@ package com.flarerobotics.lib.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.littletonrobotics.junction.Logger;
-
 import com.flarerobotics.lib.RectangularRegion;
 import com.flarerobotics.lib.vision.VisionIO.PoseObservationType;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -24,6 +18,9 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.LinkedList;
+import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
 // Code modified from the AdvantageKit vision template.
 
@@ -185,7 +182,6 @@ public class VisionSubsystem extends SubsystemBase {
                 "Vision/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
     }
 
-
     /**
      * Returns the X angle to the best target, which can be used for simple servoing
      * with vision.
@@ -230,7 +226,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Returns the cameras as an IO interface array.
-     * 
+     *
      * @return The camera array.
      */
     public VisionIO[] getCamerasIO() {
@@ -239,7 +235,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Returns the camera inputs.
-     * 
+     *
      * @return The input array.
      */
     public VisionIOInputsAutoLogged[] getCameraInputs() {

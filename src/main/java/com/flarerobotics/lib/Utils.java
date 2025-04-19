@@ -1,12 +1,11 @@
 package com.flarerobotics.lib;
 
-import java.lang.reflect.Field;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import java.lang.reflect.Field;
 
 /** A static utility class for generic functions. */
 public class Utils {
@@ -29,7 +28,7 @@ public class Utils {
 
     /**
      * Disables the "command loop overrun" warning.
-     * 
+     *
      * @param robot The main "Robot.java" class.
      * @return True if successful.
      */
@@ -49,7 +48,7 @@ public class Utils {
 
     /**
      * Sets the duration before a "command loop overrun" warning is thrown.
-     * 
+     *
      * @param robot   The main "Robot.java" class.
      * @param timeout The timeout in seconds.
      * @return True if successful.

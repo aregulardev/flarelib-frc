@@ -24,11 +24,10 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Aligns the robot to the given tag from a birdseye 2D view.
- * 
+ *
  * <p>
  * Note: Uses <b>Meters</b> and <b>Radians</b> for PID values.
- * 
- * 
+ *
  * <p>
  * Example usage:
  * <p>
@@ -51,7 +50,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
                                 }
                             }));
  * </pre></code>
- * 
  */
 public class AlignToTagCommand2D extends Command {
     private Pose2d m_pose;
@@ -66,11 +64,15 @@ public class AlignToTagCommand2D extends Command {
 
     private Supplier<Integer> m_tagId = () -> 0;
 
+    private boolean m_doDebug = true;
+    /** Wether details such as the PID error and setpoint should be logged. */
+    public static boolean kDoDetailedDebug = false;
+
     private double m_alignDistanceMeters, m_horizontalOffsetMeters, m_txOffsetDegrees;
 
     /**
      * Constructs a new AlignToTagCommand2D.
-     * 
+     *
      * @param poseSupplier           The field-relative robot pose supplier.
      * @param chassisSpeedsConsumer  The chassis speeds consumer.
      * @param tagId                  The tag ID to align to.
@@ -83,9 +85,16 @@ public class AlignToTagCommand2D extends Command {
      * @param angularConstants       The angular PID constants.
      * @param drive                  The drive subsystem for command requirements.
      */
-    public AlignToTagCommand2D(Supplier<Pose2d> poseSupplier, Consumer<ChassisSpeeds> chassisSpeedsConsumer, int tagId,
-            double horizontalOffsetMeters, double alignDistanceMeters, double chassisLengthMeters,
-            PIDConstants translationalConstants, PIDConstants angularConstants, Subsystem drive) {
+    public AlignToTagCommand2D(
+            Supplier<Pose2d> poseSupplier,
+            Consumer<ChassisSpeeds> chassisSpeedsConsumer,
+            int tagId,
+            double horizontalOffsetMeters,
+            double alignDistanceMeters,
+            double chassisLengthMeters,
+            PIDConstants translationalConstants,
+            PIDConstants angularConstants,
+            Subsystem drive) {
 
         m_supplier = poseSupplier;
         m_consumer = chassisSpeedsConsumer;
@@ -123,7 +132,7 @@ public class AlignToTagCommand2D extends Command {
 
     /**
      * Constructs a new AlignToTagCommand2D.
-     * 
+     *
      * @param poseSupplier           The field-relative robot pose supplier.
      * @param chassisSpeedsConsumer  The chassis speeds consumer.
      * @param tagId                  The tag ID to align to.
@@ -131,15 +140,23 @@ public class AlignToTagCommand2D extends Command {
      * @param alignDistanceMeters    The perpendicular offset from the tag in
      *                               meters. (Right is positive)
      * @param txOffsetDegrees        The angular offset between the tag in degrees.
+     *                               (Right is positive)
      * @param chassisLengthMeters    The length of the chassis when looked at from
      *                               the side while aligning in meters.
      * @param translationalConstants The translational PID constants.
      * @param angularConstants       The angular PID constants.
      * @param drive                  The drive subsystem for command requirements.
      */
-    public AlignToTagCommand2D(Supplier<Pose2d> poseSupplier, Consumer<ChassisSpeeds> chassisSpeedsConsumer, int tagId,
-            double horizontalOffsetMeters, double alignDistanceMeters, double txOffsetDegrees,
-            double chassisLengthMeters, PIDConstants translationalConstants, PIDConstants angularConstants,
+    public AlignToTagCommand2D(
+            Supplier<Pose2d> poseSupplier,
+            Consumer<ChassisSpeeds> chassisSpeedsConsumer,
+            int tagId,
+            double horizontalOffsetMeters,
+            double alignDistanceMeters,
+            double txOffsetDegrees,
+            double chassisLengthMeters,
+            PIDConstants translationalConstants,
+            PIDConstants angularConstants,
             Subsystem drive) {
         m_supplier = poseSupplier;
         m_consumer = chassisSpeedsConsumer;
@@ -177,10 +194,10 @@ public class AlignToTagCommand2D extends Command {
 
     /**
      * Constructs a new AlignToTagCommand2D.
-     * 
+     *
      * <p>
      * <i>Note: The supplier is only called once upon initialization.
-     * 
+     *
      * @param poseSupplier           The field-relative robot pose supplier.
      * @param chassisSpeedsConsumer  The chassis speeds consumer.
      * @param tagId                  The supplier of the tag ID to align to.
@@ -193,10 +210,16 @@ public class AlignToTagCommand2D extends Command {
      * @param angularConstants       The angular PID constants.
      * @param drive                  The drive subsystem for command requirements.
      */
-    public AlignToTagCommand2D(Supplier<Pose2d> poseSupplier, Consumer<ChassisSpeeds> chassisSpeedsConsumer,
+    public AlignToTagCommand2D(
+            Supplier<Pose2d> poseSupplier,
+            Consumer<ChassisSpeeds> chassisSpeedsConsumer,
             Supplier<Integer> tagId,
-            double horizontalOffsetMeters, double alignDistanceMeters, double chassisLengthMeters,
-            PIDConstants translationalConstants, PIDConstants angularConstants, Subsystem drive) {
+            double horizontalOffsetMeters,
+            double alignDistanceMeters,
+            double chassisLengthMeters,
+            PIDConstants translationalConstants,
+            PIDConstants angularConstants,
+            Subsystem drive) {
 
         m_supplier = poseSupplier;
         m_consumer = chassisSpeedsConsumer;
@@ -234,10 +257,10 @@ public class AlignToTagCommand2D extends Command {
 
     /**
      * Constructs a new AlignToTagCommand2D.
-     * 
+     *
      * <p>
      * <i>Note: The supplier is only called once upon initialization.
-     * 
+     *
      * @param poseSupplier           The field-relative robot pose supplier.
      * @param chassisSpeedsConsumer  The chassis speeds consumer.
      * @param tagId                  The supplier of the tag ID to align to.
@@ -245,16 +268,23 @@ public class AlignToTagCommand2D extends Command {
      * @param alignDistanceMeters    The perpendicular offset from the tag in
      *                               meters. (Right is positive)
      * @param txOffsetDegrees        The angular offset between the tag in degrees.
+     *                               (Right is positive)
      * @param chassisLengthMeters    The length of the chassis when looked at from
      *                               the side while aligning in meters.
      * @param translationalConstants The translational PID constants.
      * @param angularConstants       The angular PID constants.
      * @param drive                  The drive subsystem for command requirements.
      */
-    public AlignToTagCommand2D(Supplier<Pose2d> poseSupplier, Consumer<ChassisSpeeds> chassisSpeedsConsumer,
+    public AlignToTagCommand2D(
+            Supplier<Pose2d> poseSupplier,
+            Consumer<ChassisSpeeds> chassisSpeedsConsumer,
             Supplier<Integer> tagId,
-            double horizontalOffsetMeters, double alignDistanceMeters, double txOffsetDegrees,
-            double chassisLengthMeters, PIDConstants translationalConstants, PIDConstants angularConstants,
+            double horizontalOffsetMeters,
+            double alignDistanceMeters,
+            double txOffsetDegrees,
+            double chassisLengthMeters,
+            PIDConstants translationalConstants,
+            PIDConstants angularConstants,
             Subsystem drive) {
         m_supplier = poseSupplier;
         m_consumer = chassisSpeedsConsumer;
@@ -292,16 +322,19 @@ public class AlignToTagCommand2D extends Command {
 
     @Override
     public void initialize() {
-        System.out.println("Starting AutoAlign...");
         var pose = VisionSubsystem.kLayout.getTagPose(m_tagId.get());
         if (!pose.isPresent()) {
-            DriverStation.reportWarning("Unable to start AutoAlign2D: invalid tag ID", true);
+            DriverStation.reportWarning("Unable to start AlignToTag2D: invalid tag ID '" + m_tagId.get() + "'", true);
             cancel();
             return;
         }
+
+        if (m_doDebug)
+            System.out.println("Starting AlignToTag2D...");
+
         // Offset the pose
-        m_pose = PoseUtils.offsetSideways(PoseUtils.offsetPerpendicular(pose.get().toPose2d(), m_alignDistanceMeters),
-                m_horizontalOffsetMeters);
+        m_pose = PoseUtils.offsetSideways(
+                PoseUtils.offsetPerpendicular(pose.get().toPose2d(), m_alignDistanceMeters), m_horizontalOffsetMeters);
 
         // Apply setpoints
         m_xPID.setSetpoint(m_pose.getX());
@@ -322,11 +355,19 @@ public class AlignToTagCommand2D extends Command {
     public void execute() {
         // Compute the velocities via the PID controllers
         Pose2d botPose = m_supplier.get();
-        double vx = m_xPID.calculate(botPose.getX()), vy = m_yPID.calculate(botPose.getY()),
+        double vx = m_xPID.calculate(botPose.getX()),
+                vy = m_yPID.calculate(botPose.getY()),
                 va = m_aPID.calculate(botPose.getRotation().getDegrees());
 
         // Feed the velocities into the drivetrain
         m_consumer.accept(new ChassisSpeeds(vx, vy, Math.toRadians(va)));
+
+        if (kDoDetailedDebug)
+            System.out.printf(
+                    "AlignToTag2D debug: eX: %.2f eY: %.2f eA: %.2f | Setpoint X: %.2f Y: %.2f A: %.2f | Timer: %.2f\n",
+                    m_xPID.getPositionError(), m_yPID.getPositionError(), Math.toDegrees(m_aPID.getPositionError()),
+                    m_xPID.getSetpoint(), m_yPID.getSetpoint(), Math.toDegrees(m_aPID.getSetpoint()), m_timer.get());
+
     }
 
     @Override
@@ -334,8 +375,8 @@ public class AlignToTagCommand2D extends Command {
         // End conditions:
         // * Timer exceeded max time
         // * Setpoint has been reached
-        return m_xPID.atSetpoint() && m_yPID.atSetpoint()
-                && m_aPID.atSetpoint() || m_timer.get() > m_maxTimer;
+
+        return m_xPID.atSetpoint() && m_yPID.atSetpoint() && m_aPID.atSetpoint() || m_timer.hasElapsed(m_maxTimer);
     }
 
     @Override
@@ -345,17 +386,17 @@ public class AlignToTagCommand2D extends Command {
         m_consumer.accept(new ChassisSpeeds(0, 0, 0));
 
         // Debug messages
-        if (interrupted) {
-            System.out.printf("AutoAlign has been interrupted. Time (s): %.2f\n", m_timer.get());
-        } else {
-            System.out.printf("AutoAlign has finished successfully. Time (s): %.2f\n", m_timer.get());
+        if (interrupted && m_doDebug) {
+            System.out.printf("AlignToTag2D has been interrupted. Time (s): %.2f\n", m_timer.get());
+        } else if (m_doDebug) {
+            System.out.printf("AlignToTag2D has finished successfully. Time (s): %.2f\n", m_timer.get());
         }
     }
 
     /**
      * Sets the tolerance of the translational (x, y) PID controllers. Defaults to
      * 0.02 meters = 2 cm.
-     * 
+     *
      * @param toleranceMeters The tolerance in meters.
      */
     public void setTranslationalTolerance(double toleranceMeters) {
@@ -364,9 +405,8 @@ public class AlignToTagCommand2D extends Command {
     }
 
     /**
-     * Sets the tolerance of the angular PID controller. Defaults to 0.03 rads ~=
-     * 1.7 degs.
-     * 
+     * Sets the tolerance of the angular PID controller. Defaults to 1 degree.
+     *
      * @param toleranceDegrees The tolerance in degrees.
      */
     public void setAngularTolerance(double toleranceDegrees) {
@@ -375,7 +415,7 @@ public class AlignToTagCommand2D extends Command {
 
     /**
      * Sets the maximum duration of the timer. Defaults to 5 seconds.
-     * 
+     *
      * @param maxSeconds The maximum duration in seconds.
      */
     public void setMaxTimer(double maxSeconds) {
@@ -383,8 +423,17 @@ public class AlignToTagCommand2D extends Command {
     }
 
     /**
-     * Gets the closest tag ID to the given robot pose.
+     * Sets wether debug is enabled or not. Defaults to true.
      * 
+     * @param enabled True if enabled.
+     */
+    public void setDoDebug(boolean enabled) {
+        m_doDebug = enabled;
+    }
+
+    /**
+     * Gets the closest tag ID to the given robot pose.
+     *
      * @param robotPose The field-relative robot pose.
      * @return The field-relative tag ID.
      */
@@ -405,7 +454,7 @@ public class AlignToTagCommand2D extends Command {
     /**
      * Gets the closest tag ID to the given robot pose in account to the valid tag
      * IDs.
-     * 
+     *
      * @param robotPose       The field-relative robot pose.
      * @param validTagsFilter The tag IDs to choose from.
      * @return The field-relative tag ID.
@@ -415,8 +464,7 @@ public class AlignToTagCommand2D extends Command {
         double minDist = Double.POSITIVE_INFINITY;
         for (AprilTag tag : VisionSubsystem.kLayout.getTags()) {
             double distance = tag.pose.toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            if (distance < minDist
-                    && Arrays.binarySearch(validTagsFilter, tag.ID) != -1) {
+            if (distance < minDist && Arrays.binarySearch(validTagsFilter, tag.ID) >= 0) {
                 id = tag.ID;
                 minDist = distance;
             }

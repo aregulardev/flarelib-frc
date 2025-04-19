@@ -46,4 +46,11 @@ public interface VisionIO {
      * @param inputs The inputs.
      */
     public default void updateInputs(VisionIOInputs inputs) {}
+
+    /**
+     * Sets the current pipeline index.
+     *
+     * @param pipelineIndex The index.
+     */
+    public void setPipeline(int pipelineIndex);
 }

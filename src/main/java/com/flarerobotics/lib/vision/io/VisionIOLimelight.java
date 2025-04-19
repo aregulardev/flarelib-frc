@@ -56,8 +56,8 @@ public class VisionIOLimelight implements VisionIO {
     public void updateInputs(VisionIOInputs inputs) {
         // Update connection status based on whether an update has been seen in the
         // given time range
-        inputs.isCameraConnected = ((RobotController.getFPGATime() - m_latencySubscriber.getLastChange())
-                / 1000) < kLatencyTimeoutMs;
+        inputs.isCameraConnected =
+                ((RobotController.getFPGATime() - m_latencySubscriber.getLastChange()) / 1000) < kLatencyTimeoutMs;
 
         // Update target observation
         inputs.latestTargetObservation = new TargetObservation(
@@ -76,21 +76,20 @@ public class VisionIOLimelight implements VisionIO {
         // LimelightHelpers.getBotPose(String, String boolean) uses Pose2d instead of
         // Pose3d.
         for (var rawSample : m_megatag2Subscriber.readQueue()) {
-            if (rawSample.value.length == 0)
-                continue;
+            if (rawSample.value.length == 0) continue;
             for (int i = kTagDataStartIndex; i < rawSample.value.length; i += kValsPerSample) {
                 tagIDs.add((int) rawSample.value[i]);
             }
             poseObservations.add(new PoseObservation(
                     rawSample.timestamp * 1e-6 - rawSample.value[kLaterncyIndex] * 1e-3, // Timestamp, based on server
-                                                                                         // timestamp of publish and
-                                                                                         // latency
+                    // timestamp of publish and
+                    // latency
                     LimelightHelpers.toPose3D(rawSample.value), // 3D pose estimate
                     0.0, // Ambiguity, zeroed because the pose is already disambiguated
                     (int) rawSample.value[kTagCountIndex], // Tag count
                     rawSample.value[kAverageTagDistIndex], // Average tag distance
                     PoseObservationType.MEGATAG_2 // Observation type
-            ));
+                    ));
         }
 
         // Save pose observations to inputs object
@@ -100,7 +99,7 @@ public class VisionIOLimelight implements VisionIO {
         }
 
         // Least ambiguous tag
-        inputs.bestTagID = (int)LimelightHelpers.getFiducialID(m_name);
+        inputs.bestTagID = (int) LimelightHelpers.getFiducialID(m_name);
 
         // Save tag IDs to inputs objects
         inputs.tagIDs = new int[tagIDs.size()];
@@ -108,5 +107,10 @@ public class VisionIOLimelight implements VisionIO {
         for (int id : tagIDs) {
             inputs.tagIDs[i++] = id;
         }
+    }
+
+    @Override
+    public void setPipeline(int pipelineIndex) {
+        LimelightHelpers.setPipelineIndex(m_name, pipelineIndex);
     }
 }
