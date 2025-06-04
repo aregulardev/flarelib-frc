@@ -5,7 +5,8 @@
 package frc.robot;
 
 import com.flarerobotics.lib.BatteryUpdater;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import com.flarerobotics.lib.auto.LocalADStarAK;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -16,7 +17,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
 
-    @SuppressWarnings("unused")
     private final RobotContainer m_robotContainer;
 
     public Robot() {
@@ -25,18 +25,17 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
+        Pathfinding.setPathfinder(new LocalADStarAK());
+
         Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs"));
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
         BatteryUpdater.setNominalVoltage(12.5);
-        ;
     }
 
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        BatteryUpdater.update();
-        System.out.println("Voltage: " + RoboRioSim.getVInVoltage());
     }
 
     @Override
@@ -47,7 +46,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
@@ -62,20 +61,10 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-
-        // m_robotContainer.sim.setSetpoint(State.TEST);
-        // m_robotContainer.sim.setRPM(State.TEST);
     }
 
     @Override
-    public void teleopPeriodic() {
-        /*
-         * System.out.println( Timer.getFPGATimestamp() + "::" +
-         * m_robotContainer.sim.getCurrentHeight_Unit().in(Centimeters));
-         */
-        // System.out.println(
-        // Timer.getFPGATimestamp() + "::" + m_robotContainer.sim.getRPM());
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void testInit() {

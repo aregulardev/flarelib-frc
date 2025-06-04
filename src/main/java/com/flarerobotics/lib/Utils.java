@@ -9,6 +9,9 @@ import java.lang.reflect.Field;
 
 /** A static utility class for generic functions. */
 public class Utils {
+
+    public static final double EPSILON = 1e-9;
+
     /** Unconstructuble as Utils is a static class. */
     private Utils() {
         throw new UnsupportedOperationException("Cannot instantiate static class Utils");
@@ -16,14 +19,14 @@ public class Utils {
 
     /**
      * Returns wether a number is close to another number by a negligible amount
-     * (10^-7).
+     * (10^-9).
      *
      * @param a The first number.
      * @param b The second number.
      * @return True if roughly equal.
      */
     public static boolean epsilonEquals(double a, double b) {
-        return MathUtil.isNear(a, b, 1e-7);
+        return MathUtil.isNear(a, b, EPSILON);
     }
 
     /**

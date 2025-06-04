@@ -6,14 +6,18 @@ FlareLib-FRC is a robotics library designed for use in FIRST Robotics Competitio
 
 ### Vision Processing
 - A subsystem template for robot localization using AprilTags. Compatible with Limelight, PhotonVision, and PhotonVision simulation.
+- Automatic AprilTag alignment via the `AlignToTagCommand2D` class.
 
 ### Geometry Utilities
 - Provides utilities for working with WPILib's `Pose2d` and `Pose3d` classes, including translations and rotations.
 
 ### Simulation Support
 - Integration with WPILib simulation tools, including `RoboRioSim` for simulating RoboRIO behavior.
-- Custom subsystem simulation for cascade and continuous elevators along with an arm simulation.
-- Vendor simulation support for CTRE Phoenix and REV Robotics libraries.
+- Custom subsystem simulation for cascade and continuous elevators along with an arm/pivot simulation.
+
+### Autonomous Routines
+- Includes an autonomous routine manager, which automatically handles the autonomous period.
+- Allows for path generation from string, can be useful to fix autonomous conflicts right before a match.
 
 ### Logging and Diagnostics
 - Integration with AdvantageKit for logging and diagnostics.

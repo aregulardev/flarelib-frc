@@ -118,7 +118,7 @@ public class CascadeAscopeDisplay {
         double fractionHeight = fraction * rawHeight;
 
         // 3) Add offset as a baseline.
-        double zHeight = fractionHeight + m_offset;
+        double zHeight = fractionHeight; // + m_offset;
 
         // 4) Final clamp to ensure we never exceed physical max.
         zHeight = MathUtil.clamp(zHeight, 0, m_elevatorMaxHeight);

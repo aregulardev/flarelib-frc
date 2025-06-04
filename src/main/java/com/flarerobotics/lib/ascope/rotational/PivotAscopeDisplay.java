@@ -122,8 +122,6 @@ public class PivotAscopeDisplay {
             // Translate along the segment length
             double length = m_segmentLengths[i];
 
-            // For telescopic arms, you might incorporate the extension supplier on a
-            // specific joint
             if (m_extensionSupplier != null) {
                 length += m_extensionSupplier.get()[i];
             }
@@ -170,9 +168,7 @@ public class PivotAscopeDisplay {
         // Note: array indexing is 0-indexed.
         for (int i = 0; i < joint; i++) {
             double length = m_segmentLengths[i];
-            // For telescopic arms, incorporate extension for the first joint (if
-            // applicable)
-            if (i == 0 && m_extensionSupplier != null) {
+            if (m_extensionSupplier != null) {
                 length += m_extensionSupplier.get()[i];
             }
 
@@ -181,7 +177,7 @@ public class PivotAscopeDisplay {
             Transform3d rotationTransform = new Transform3d(new Translation3d(), jointRotation);
 
             // Then apply the translation along the segment.
-            Transform3d translationTransform = new Transform3d(new Translation3d(0, 0, length), Rotation3d.kZero);
+            Transform3d translationTransform = new Transform3d(new Translation3d(length, 0, 0), Rotation3d.kZero);
 
             // Update the cumulative pose.
             pose = pose.transformBy(rotationTransform).transformBy(translationTransform);
