@@ -19,8 +19,7 @@ public class BilinearInterpolator2D {
      * @param V M×N matrix of values: V[i][j] = f(X[i], Y[j])
      */
     public BilinearInterpolator2D(double[] X, double[] Y, double[][] V) {
-        if (X.length < 2 || Y.length < 2)
-            throw new IllegalArgumentException("need at least 2 grid points per axis");
+        if (X.length < 2 || Y.length < 2) throw new IllegalArgumentException("need at least 2 grid points per axis");
         if (V.length != X.length || V[0].length != Y.length)
             throw new IllegalArgumentException("value matrix dimensions must match X,Y lengths");
         this.X = X.clone();
@@ -38,6 +37,7 @@ public class BilinearInterpolator2D {
      *
      * @param x The X coordinate.
      * @param y The Y coordinate.
+     * @return The interpolated value at (x, y).
      */
     public double interpolate(double x, double y) {
         // Find the indices
@@ -68,18 +68,14 @@ public class BilinearInterpolator2D {
     private static int findUpperIndex(double[] A, double x) {
         int lo = 0, hi = A.length - 1;
 
-        if (x <= A[0])
-            return 0; // Left extrapolation
-        if (x >= A[hi])
-            return hi; // Right extrapolation
+        if (x <= A[0]) return 0; // Left extrapolation
+        if (x >= A[hi]) return hi; // Right extrapolation
 
         // Simple binary search
         while (lo + 1 < hi) {
             int mid = lo + (hi - lo) / 2; // Calculate midpoint, avoid int overflow
-            if (A[mid] >= x)
-                hi = mid;
-            else
-                lo = mid;
+            if (A[mid] >= x) hi = mid;
+            else lo = mid;
         }
         return hi;
     }

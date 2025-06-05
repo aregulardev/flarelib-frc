@@ -21,7 +21,7 @@ public class LEDPatterns {
     /**
      * Constructs a new LEDPatterns.
      *
-     * @param ledLinearDensity The linear density of the pixels of the LED.
+     * @param subsystem The LED subsystem.
      */
     public LEDPatterns(LibLEDSubsystem subsystem) {
         m_subsystem = subsystem;
@@ -48,6 +48,7 @@ public class LEDPatterns {
      * @param brightness The brightness on a scale of 0-255.
      * @param saturation The saturation on a scale of 0-255.
      * @param velocity   The velocity in m/s. (use 1 for default)
+     * @return The LEDPattern that is applied to the subsystem.
      */
     public LEDPattern rainbow(double velocity, int brightness, int saturation) {
         LEDPattern pattern = LEDPattern.rainbow(saturation, brightness);
@@ -59,6 +60,7 @@ public class LEDPatterns {
      * Applies a solid color to the LED subsystem.
      *
      * @param color The color.
+     * @return The LEDPattern that is applied to the subsystem.
      */
     public LEDPattern solid(Color color) {
         return LEDPattern.solid(color);
@@ -67,8 +69,8 @@ public class LEDPatterns {
     /**
      * Creates a continuous gradient.
      *
-     * @param color The colors to include.
-     * @return The gradient pattern.
+     * @param colors The colors to include.
+     * @return The LEDPattern that is applied to the subsystem.
      */
     public LEDPattern continuousGradient(Color... colors) {
         return LEDPattern.gradient(LEDPattern.GradientType.kContinuous, colors);
@@ -78,7 +80,7 @@ public class LEDPatterns {
      * Creates a discontinuous gradient.
      *
      * @param colors The colors to include.
-     * @return The gradient pattern.
+     * @return The LEDPattern that is applied to the subsystem.
      */
     public LEDPattern discontinuousGradient(Color... colors) {
         return LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, colors);
@@ -90,7 +92,7 @@ public class LEDPatterns {
      *
      * @param steps The steps map, where the double is the point at which the
      *              section for the color starts, has the range [0, 1).
-     * @return The steps pattern.
+     * @return The LEDPattern that is applied to the subsystem.
      */
     public LEDPattern steps(Map<Double, Color> steps) {
         return LEDPattern.steps(steps);
@@ -102,7 +104,7 @@ public class LEDPatterns {
      *
      * @param pattern          The pattern to apply the mask to.
      * @param progressSupplier The percentage supplier.
-     * @return The masked pattern.
+     * @return The LEDPattern that is applied to the subsystem with the mask.
      */
     public LEDPattern progressMask(LEDPattern pattern, DoubleSupplier progressSupplier) {
         return pattern.mask(LEDPattern.progressMaskLayer(progressSupplier));
@@ -231,6 +233,7 @@ public class LEDPatterns {
      *                 last color indicates the highest temperature. A palette
      *                 resembling default Fire2012 would be
      *                 {@code List.of(Color.kBlack, Color.kRed, Color.kYellow, Color.kWhite)}.
+     * @param sectionInverted If true, the fire will be inverted.
      * @return The generated LED buffer runnable.
      */
     public Runnable fire(double sparking, double cooling, List<Color> colors, boolean sectionInverted) {

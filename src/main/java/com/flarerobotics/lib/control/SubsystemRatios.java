@@ -4,17 +4,16 @@ package com.flarerobotics.lib.control;
  * Utility class for calculating subsystem ratios.
  */
 public class SubsystemRatios {
-    private SubsystemRatios() {
-    }
+    private SubsystemRatios() {}
 
     /**
      * Calculates the Sensor to Mechanism Ratio (STMR) for the elevator subsystem.
      * This ratio is used to convert sensor readings to mechanism positions. Uses a
      * rope.
-     * 
+     *
      * <p>
-     * <b>Units: X/rev
-     * 
+     * <b>Units: X/rev</b>
+     *
      * @param pulleyRadius The radius of the pulley in unit X.
      * @param reduction    The overall reduction.
      * @return The calculated STM ratio.
@@ -27,10 +26,10 @@ public class SubsystemRatios {
      * Calculates the Sensor to Mechanism Ratio (STMR) for the elevator subsystem.
      * This ratio is used to convert sensor readings to mechanism positions. Uses a
      * chain.
-     * 
+     *
      * <p>
-     * <b>Units: X/rev
-     * 
+     * <b>Units: X/rev</b>
+     *
      * @param chainPitch          The pitch of the chain in unit X.
      * @param sprocketTeethAmount The number of teeth on the sprocket.
      * @param reduction           The overall reduction.
@@ -42,11 +41,11 @@ public class SubsystemRatios {
 
     /**
      * Calculates the Sensor to Mechanism Ratio (STMR) for the arm subsystem.
-     * This ratio is used to convert sensor readings to mechanism positions. 
-     * 
+     * This ratio is used to convert sensor readings to mechanism positions.
+     *
      * <p>
-     * <b>Units: Degrees/rev
-     * 
+     * <b>Units: Degrees/rev</b>
+     *
      * @param reduction The overall reduction.
      * @return The calculated STM ratio.
      */
@@ -54,13 +53,13 @@ public class SubsystemRatios {
         return 360 / reduction;
     }
 
-        /**
+    /**
      * Calculates the Sensor to Mechanism Ratio (STMR) for the arm subsystem.
-     * This ratio is used to convert sensor readings to mechanism positions. 
-     * 
+     * This ratio is used to convert sensor readings to mechanism positions.
+     *
      * <p>
-     * <b>Units: Rads/rev
-     * 
+     * <b>Units: Rads/rev</b>
+     *
      * @param reduction The overall reduction.
      * @return The calculated STM ratio.
      */

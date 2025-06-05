@@ -1,19 +1,9 @@
 package com.flarerobotics.lib.auto;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,6 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * A utility class used to generate, manage and select autonomous routines on
@@ -35,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * autonomous period begins.
  *
  * <p>
- * <i><b>Note: Only 1 instance of the autonomous manager is allowed!
+ * <i><b>Note: Only 1 instance of the autonomous manager is allowed!</b></i>
  */
 public class AutonomousManager {
     // Maps && Constraints
@@ -143,12 +141,9 @@ public class AutonomousManager {
             boolean warmupPathfind) {
         if (m_instance != null)
             throw new IllegalStateException("AutonomousManager already initialized, only one instance is allowed");
-        if (poses == null)
-            throw new IllegalArgumentException("Poses cannot be null");
-        if (commands == null)
-            throw new IllegalArgumentException("Commands cannot be null");
-        if (constraints == null)
-            throw new IllegalArgumentException("Constraints cannot be null");
+        if (poses == null) throw new IllegalArgumentException("Poses cannot be null");
+        if (commands == null) throw new IllegalArgumentException("Commands cannot be null");
+        if (constraints == null) throw new IllegalArgumentException("Constraints cannot be null");
 
         m_poseMap = poses;
         m_commandMap = commands;
@@ -179,21 +174,25 @@ public class AutonomousManager {
      * command will be prioritized.
      *
      * <p>
-     * <b>Note: Command names can't contain "/", ":" or spaces.
+     * <b>Note: Command names can't contain "/", ":" or spaces.</b>
      *
      * <p>
      * Example usage:
      *
      * <pre>
+     * <code>
      * String str = "path1/path2:command1:command2/path3:command3";
      * m_generator.generateAutoFromString(str); // Would generate: PATH1 -> (PATH2 COMMAND1 COMMAND2 parallel) -> (PATH3
      *                                          // COMMAND3 parallel)
+     * </code>
      * </pre>
      *
      *
      * @param pathPattern The path pattern. The commands and path names separated by
      *                    a '/'. To make 2 or more parts parallel, use a ':'
      *                    inbetween each.
+     * @return The generated autonomous command, or an empty command if the pattern is
+     *         invalid or empty.
      * @throws RuntimeException If the path pattern is malformed and
      *                          {@link #kErrorInsteadOfWarn} is true.
      */
@@ -218,8 +217,7 @@ public class AutonomousManager {
                     .filter(s -> {
                         // Filter empty parallel sections and warn
                         boolean isBlank = s.isBlank();
-                        if (isBlank)
-                            warnOrThrow("empty parallel command name passed");
+                        if (isBlank) warnOrThrow("empty parallel command name passed");
                         return !isBlank;
                     })
                     .map(name -> {
@@ -229,8 +227,7 @@ public class AutonomousManager {
                         }
 
                         Pose2d pose = m_poseMap.get(name);
-                        if (pose != null)
-                            return getPathfindCommandPrivate(pose, name);
+                        if (pose != null) return getPathfindCommandPrivate(pose, name);
 
                         warnOrThrow("invalid command or path name '" + name + "'");
                         return null;
@@ -300,7 +297,7 @@ public class AutonomousManager {
 
     /**
      * Puts the Flare auto builder in the given tab on ShuffleBoard. <i>The
-     * Flare widget needs to be installed.<i>
+     * Flare widget needs to be installed.</i>
      *
      * @param tab   The tab to put the widget in.
      * @param title The title of the widget.
@@ -314,7 +311,7 @@ public class AutonomousManager {
     /**
      * Puts the Flare auto builder in the default tab ({@link #kWidgetDefaultTab})
      * with the default title {@link #kWidgetDefaultTitle} on ShuffleBoard. <i>The
-     * Flare widget needs to be installed.
+     * Flare widget needs to be installed.</i>
      */
     public void initFlareAutoBuilderWidget() {
         initFlareAutoBuilderWidget(kWidgetDefaultTab, kWidgetDefaultTitle);
@@ -562,7 +559,7 @@ public class AutonomousManager {
      * Sets the pose triggers. Requires the pose supplier to be set via
      * {@link #setRobotPoseSupplier(Supplier)} first.
      *
-     * @param constraints The new path constraints.
+     * @param triggers The list of zone triggers.
      * @return The singleton instance for chaining.
      */
     public AutonomousManager initializePoseTriggers(List<ZoneTrigger> triggers) {
@@ -596,8 +593,10 @@ public class AutonomousManager {
                     warnOrThrow("null robot pose passed to trigger");
                     return false;
                 }
-                return robotPose != null && targetPose != null && robotPose.getTranslation()
-                        .getDistance(targetPose.getTranslation()) <= trigger.getTriggerDistance();
+                return robotPose != null
+                        && targetPose != null
+                        && robotPose.getTranslation().getDistance(targetPose.getTranslation())
+                                <= trigger.getTriggerDistance();
             });
 
             // Bind the command to the trigger
@@ -635,7 +634,7 @@ public class AutonomousManager {
 
     /**
      * Sets the field-relative robot pose supplier.
-     * 
+     *
      * @param poseSupplier The pose supplier.
      * @return The singleton instance for chaining.
      */
@@ -678,17 +677,13 @@ public class AutonomousManager {
     }
 
     private void cancelAuto() {
-        if (m_mainRetrievedCommand != null && m_mainRetrievedCommand.isScheduled())
-            m_mainRetrievedCommand.cancel();
-        if (m_fallbackCommand != null && m_fallbackCommand.isScheduled())
-            m_fallbackCommand.cancel();
+        if (m_mainRetrievedCommand != null && m_mainRetrievedCommand.isScheduled()) m_mainRetrievedCommand.cancel();
+        if (m_fallbackCommand != null && m_fallbackCommand.isScheduled()) m_fallbackCommand.cancel();
     }
 
     private void warnOrThrow(String message) {
-        if (kErrorInsteadOfWarn)
-            throw new RuntimeException("AutonomousManager: " + message);
-        else
-            DriverStation.reportWarning("Error in AutonomousManager: " + message, true);
+        if (kErrorInsteadOfWarn) throw new RuntimeException("AutonomousManager: " + message);
+        else DriverStation.reportWarning("Error in AutonomousManager: " + message, true);
     }
 
     private void updateNTEntries() {
@@ -703,8 +698,7 @@ public class AutonomousManager {
     }
 
     private Command getPathfindCommandPrivate(Pose2d pose, String poseName) {
-        if (pose == null)
-            return Commands.none();
+        if (pose == null) return Commands.none();
 
         // The setup for pathfinding
         if (m_pathfindStrategy == PathfindStrategy.PRECISION_PATHFIND) {
@@ -728,7 +722,7 @@ public class AutonomousManager {
      * {@link AutonomousManager}.
      */
     public enum PrimaryCommandSource {
-        /** Disables the autonomous mode. <i>The pre-auto command will still be ran. */
+        /** Disables the autonomous mode. <i>The pre-auto command will still be ran.</i> */
         NONE,
         /** Gets the command from the supplier provided. */
         SUPPLIER,
@@ -749,14 +743,14 @@ public class AutonomousManager {
     public enum PathfindStrategy {
         /**
          * Uses the built in {@link AutoBuilder#pathfindToPose(Pose2d, PathConstraints)}
-         * method to pathfind. <b>{@link AutoBuilder} must be configured.
+         * method to pathfind. <b>{@link AutoBuilder} must be configured.</b>
          */
         DEFAULT,
         /**
          * First pathfinds to the start of a path, and then follows the path which goes
          * to a key location for increased precision. The paths should start at a point
          * relatively close to the goal/ending point, and must have the same name as
-         * registered in the poses map. <b>{@link AutoBuilder} must be configured.
+         * registered in the poses map. <b>{@link AutoBuilder} must be configured.</b>
          */
         PRECISION_PATHFIND;
     }
@@ -772,7 +766,7 @@ public class AutonomousManager {
 
         /**
          * Constructs a new ZoneTrigger.
-         * 
+         *
          * @param poseName    The name of origin of the trigger.
          * @param triggerDist The distance from the pose to trigger the command.
          * @param command     The command to execute when the robot is within the

@@ -2,15 +2,14 @@ package com.flarerobotics.lib.region;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
 import java.util.List;
 
 /**
  * A polygonal region on the field. Used for dividing the field into smaller
  * sections.
- * 
+ *
  * The vertices must be specified in (either CW or CCW) order, and the polygon
- * must be non‐self‐intersecting.
+ * must be non-self-intersecting.
  */
 public class PolygonalRegion {
     private final List<Translation2d> m_vertices;
@@ -19,7 +18,7 @@ public class PolygonalRegion {
      * Constructs a new PolygonalRegion.
      *
      * @param vertices The ordered list of corner points (A, B, C, …).
-     *                 Must form a simple (non‐self‐intersecting) polygon.
+     *                 Must form a simple (non-self-intersecting) polygon.
      */
     public PolygonalRegion(List<Translation2d> vertices) {
         if (vertices == null || vertices.size() < 3) {
@@ -52,7 +51,7 @@ public class PolygonalRegion {
     /**
      * Returns whether the given 2D point lies within this polygon (including
      * boundary).
-     * Uses the ray‐casting (crossing‐number) algorithm.
+     * Uses the ray-casting (crossing-number) algorithm.
      *
      * @param point The point to test.
      * @return True if the point is inside or on an edge.
@@ -61,7 +60,7 @@ public class PolygonalRegion {
         double x = point.getX();
         double y = point.getY();
 
-        // Ray‐casting: cast a horizontal ray to +infinity in X, count crossings.
+        // Ray-casting: cast a horizontal ray to +infinity in X, count crossings.
         boolean inside = false;
         int n = m_vertices.size();
 
@@ -142,9 +141,7 @@ public class PolygonalRegion {
      * Determines if the line segment (p1->p2) intersects the segment (p3->p4).
      * Uses orientation tests.
      */
-    private static boolean linesIntersect(
-            Translation2d p1, Translation2d p2,
-            Translation2d p3, Translation2d p4) {
+    private static boolean linesIntersect(Translation2d p1, Translation2d p2, Translation2d p3, Translation2d p4) {
         double x1 = p1.getX(), y1 = p1.getY();
         double x2 = p2.getX(), y2 = p2.getY();
         double x3 = p3.getX(), y3 = p3.getY();
@@ -162,14 +159,10 @@ public class PolygonalRegion {
         }
 
         // Special cases: collinear & overlapping
-        if (o1 == 0 && onSegment(x1, y1, x2, y2, x3, y3))
-            return true;
-        if (o2 == 0 && onSegment(x1, y1, x2, y2, x4, y4))
-            return true;
-        if (o3 == 0 && onSegment(x3, y3, x4, y4, x1, y1))
-            return true;
-        if (o4 == 0 && onSegment(x3, y3, x4, y4, x2, y2))
-            return true;
+        if (o1 == 0 && onSegment(x1, y1, x2, y2, x3, y3)) return true;
+        if (o2 == 0 && onSegment(x1, y1, x2, y2, x4, y4)) return true;
+        if (o3 == 0 && onSegment(x3, y3, x4, y4, x1, y1)) return true;
+        if (o4 == 0 && onSegment(x3, y3, x4, y4, x2, y2)) return true;
 
         return false;
     }
@@ -179,8 +172,7 @@ public class PolygonalRegion {
      *
      * @return 0 if collinear, 1 if clockwise, 2 if counterclockwise.
      */
-    private static int orientation(
-            double x1, double y1, double x2, double y2, double x3, double y3) {
+    private static int orientation(double x1, double y1, double x2, double y2, double x3, double y3) {
         double val = (y2 - y1) * (x3 - x2) - (x2 - x1) * (y3 - y2);
         if (Math.abs(val) < 1e-9) {
             return 0; // collinear
@@ -191,12 +183,8 @@ public class PolygonalRegion {
     /**
      * Check if point (x3,y3) lies on the segment (x1,y1)-(x2,y2).
      */
-    private static boolean onSegment(
-            double x1, double y1, double x2, double y2, double x3, double y3) {
-        return x3 <= Math.max(x1, x2)
-                && x3 >= Math.min(x1, x2)
-                && y3 <= Math.max(y1, y2)
-                && y3 >= Math.min(y1, y2);
+    private static boolean onSegment(double x1, double y1, double x2, double y2, double x3, double y3) {
+        return x3 <= Math.max(x1, x2) && x3 >= Math.min(x1, x2) && y3 <= Math.max(y1, y2) && y3 >= Math.min(y1, y2);
     }
 
     /**
@@ -207,8 +195,7 @@ public class PolygonalRegion {
         double x2 = B.getX(), y2 = B.getY();
         double x = p.getX(), y = p.getY();
 
-        if (orientation(x1, y1, x2, y2, x, y) != 0)
-            return false;
+        if (orientation(x1, y1, x2, y2, x, y) != 0) return false;
         return onSegment(x1, y1, x2, y2, x, y);
     }
 }

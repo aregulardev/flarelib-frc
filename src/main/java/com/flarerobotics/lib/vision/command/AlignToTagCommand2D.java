@@ -31,7 +31,8 @@ import java.util.stream.Collectors;
  * <p>
  * Example usage:
  * <p>
- * <code><pre>
+ * <pre>
+ * <code>
  * Commands.defer(() -> new AlignToTagCommand2D( // Defer to always reconstruct the command
  *     m_DriveSubsystem::getPose, // Field-relative pose
  *     m_DriveSubsystem::driveFieldOriented, // Field-oriented drive
@@ -46,7 +47,8 @@ import java.util.stream.Collectors;
  *     new PIDConstants(2, 0.01, 0.007), // Angular PID
  *     m_DriveSubsystem), Set.of(m_DriveSubsystem) // Command requirements
  *  );
- * </pre></code>
+ * </code>
+ * </pre>
  */
 public class AlignToTagCommand2D extends Command {
 
@@ -275,8 +277,7 @@ public class AlignToTagCommand2D extends Command {
 
     @Override
     public void initialize() {
-        if (m_doDebug)
-            System.out.println("Starting AlignToTag2D...");
+        if (m_doDebug) System.out.println("Starting AlignToTag2D...");
 
         // Reset the controllers
         m_xPID.reset();
@@ -294,8 +295,7 @@ public class AlignToTagCommand2D extends Command {
     @Override
     public void execute() {
         // Update the setpoints if needed
-        if (!m_updateSetpointsOnce)
-            updateSetpoints();
+        if (!m_updateSetpointsOnce) updateSetpoints();
 
         // Compute the velocities via the PID controllers
         Pose2d botPose = m_supplier.get();
@@ -424,8 +424,7 @@ public class AlignToTagCommand2D extends Command {
             return;
         } else {
             m_errorCounts--;
-            if (m_errorCounts < 0)
-                m_errorCounts = 0;
+            if (m_errorCounts < 0) m_errorCounts = 0;
         }
 
         // Error count threshold

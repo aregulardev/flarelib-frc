@@ -54,9 +54,10 @@ public class VisionSubsystem extends SubsystemBase {
     /**
      * Constructs a new VisionSubsystem.
      *
-     * @param consumer The consumer to add a vision mesaurement. Recommended to use
-     *                 a WPILib pose estimator.
-     * @param io       The IO interfaces to provide for each individual camera.
+     * @param addMesaurement The consumer to add a vision mesaurement. Recommended
+     *                       to use a WPILib pose estimator.
+     * @param cameras        The IO interfaces to provide for each individual
+     *                       camera.
      */
     public VisionSubsystem(VisionConsumer addMesaurement, VisionIO... cameras) {
         m_addMesaurement = addMesaurement;

@@ -1,12 +1,7 @@
 package com.flarerobotics.lib.control;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.flarerobotics.lib.Utils;
 import com.flarerobotics.lib.math.BilinearInterpolator2D;
-
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -17,6 +12,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Robot;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Computes optimal shooter hood angle and flywheel RPM (unloaded) to hit a
@@ -153,7 +151,7 @@ public class ShooterCalculator {
             ShooterState state, // the shooter state
             double simFrequency, // simulation frequency (e.g. 50Hz for 0.02s)
             double maxTime // maximum time (seconds)
-    ) {
+            ) {
         return simulateTrajectoryPrivate(state, simFrequency, maxTime, false, 0, 0, 0);
     }
 
@@ -213,7 +211,7 @@ public class ShooterCalculator {
                     * (1.0
                             - m_config.getDropFractionMap().get(rpmUnloaded)
                                     * (m_config.getNominalVoltage() / getBatteryVoltage())); // Multiply by V_n/V_c to
-                                                                                             // scale inversely with V_c
+            // scale inversely with V_c
 
             // d) convert loaded RPM → exit speed
             vExit = rpmToSpeed(rpmLoaded, m_config.getWheelRadius());
@@ -258,10 +256,11 @@ public class ShooterCalculator {
         }
 
         // Calculate the end point pose of the hood/barrel //
-        Transform3d pivotTransform = new Transform3d(new Translation3d(0, 0, m_config.getPivotHeight()),
-                new Rotation3d());
+        Transform3d pivotTransform =
+                new Transform3d(new Translation3d(0, 0, m_config.getPivotHeight()), new Rotation3d());
 
-        double horizontalAngleRads = Math.toRadians(m_config.getPivotHorizontalRotationSupplier().get());
+        double horizontalAngleRads =
+                Math.toRadians(m_config.getPivotHorizontalRotationSupplier().get());
         Transform3d hoodTransform = new Transform3d(
                 new Translation3d(m_config.getBarrelLength(), 0, 0), new Rotation3d(0, theta, horizontalAngleRads));
 
@@ -322,7 +321,7 @@ public class ShooterCalculator {
                 * (1.0
                         - m_config.getDropFractionMap().get(finalRPM)
                                 * (m_config.getNominalVoltage() / getBatteryVoltage())); // Multiply by V_n/V_c to scale
-                                                                                         // inversely with V_c
+        // inversely with V_c
 
         // d) convert loaded RPM → exit speed
         double vExit = rpmToSpeed(rpmLoaded, m_config.getWheelRadius());
@@ -341,10 +340,11 @@ public class ShooterCalculator {
         }
 
         // Calculate the end point pose of the hood/barrel //
-        Transform3d pivotTransform = new Transform3d(new Translation3d(0, 0, m_config.getPivotHeight()),
-                new Rotation3d());
+        Transform3d pivotTransform =
+                new Transform3d(new Translation3d(0, 0, m_config.getPivotHeight()), new Rotation3d());
 
-        double horizontalAngleRads = Math.toRadians(m_config.getPivotHorizontalRotationSupplier().get());
+        double horizontalAngleRads =
+                Math.toRadians(m_config.getPivotHorizontalRotationSupplier().get());
         Transform3d hoodTransform = new Transform3d(
                 new Translation3d(m_config.getBarrelLength(), 0, 0),
                 new Rotation3d(0, Math.toRadians(finalAngleDeg), horizontalAngleRads));
@@ -369,12 +369,10 @@ public class ShooterCalculator {
      */
     private static double computeLaunchAngle(double d, double dz, double v) {
         if (d <= 0) {
-            if (d == 0 && dz == 0)
-                return 0;
+            if (d == 0 && dz == 0) return 0;
             throw new IllegalArgumentException("invalid d or dz value d='" + d + "' dz='" + dz + "'");
         }
-        if (v <= 0)
-            throw new IllegalArgumentException("invalid v value '" + v + "'");
+        if (v <= 0) throw new IllegalArgumentException("invalid v value '" + v + "'");
 
         double v2 = v * v;
         double discriminant = v2 * v2 - kG * (kG * d * d + 2 * dz * v2);
@@ -532,6 +530,7 @@ public class ShooterCalculator {
          * <b>Example Arrays: </b>
          *
          * <pre>
+         * <code>
          * // Sorted Arrays
          * double[] horizontalDistances = { 2.0, 3.0, 4.0, 5.0 }; // meters
          * double[] heightDiffs = { -0.5, 0.0, +0.5, +1.0 }; // meters, relative to the end point of the hood/barrel
@@ -549,19 +548,36 @@ public class ShooterCalculator {
          *         { 2800, 2900, 3000, 3100 }, // at d=4.0
          *         { 2700, 2800, 2900, 3000 }, // at d=5.0
          * };
+         * </code>
          * </pre>
          *
          * <p>
-         * <i><b>Notes:
+         * <i><b>Notes:</b></i>
          * <p>
+         * <i>
+         * <b>
          * - The emprical data must be measured from the shooter's pivot point.
+         * </b>
+         * </i>
          * <p>
+         * <i>
+         * <b>
          * - The grids must be sorted in ascending order.
+         * </b>
+         * </i>
          * <p>
+         * <i>
+         * <b>
          * - The data should be large enough to avoid extrapolation due to out-of-bounds
          * data, which may lead to significant inacuracies.
+         * </b>
+         * </i>
          * <p>
+         * <i>
+         * <b>
          * - The RPM speeds use the flywheel RPM.
+         * </b>
+         * </i>
          *
          * @param barrelLength                    The length of the barrel/hood in
          *                                        meters.
@@ -624,22 +640,16 @@ public class ShooterCalculator {
                     || dropFractionMap == null) {
                 throw new IllegalArgumentException("null arrays are not allowed");
             }
-            if (barrelLength < 0
-                    || pivotHeight < 0
-                    || wheelRadius <= 0
-                    || maxFreeRPM <= 0
-                    || maxAngle <= 0) {
+            if (barrelLength < 0 || pivotHeight < 0 || wheelRadius <= 0 || maxFreeRPM <= 0 || maxAngle <= 0) {
                 throw new IllegalArgumentException("invalid shooter config parameters");
             }
             if (minAngle > maxAngle) {
                 throw new IllegalArgumentException("minAngle must be less than or equal to maxAngle");
             }
-            if (angles.length != distances.length
-                    || angles[0].length != heightDiffs.length) {
+            if (angles.length != distances.length || angles[0].length != heightDiffs.length) {
                 throw new IllegalArgumentException("the angles grid has invalid dimensions");
             }
-            if (freeSpeeds.length != distances.length
-                    || freeSpeeds[0].length != heightDiffs.length) {
+            if (freeSpeeds.length != distances.length || freeSpeeds[0].length != heightDiffs.length) {
                 throw new IllegalArgumentException("the free-speed grid has invalid dimensions");
             }
             this.barrelLength = barrelLength;
@@ -666,6 +676,7 @@ public class ShooterCalculator {
          * <b>Example Arrays: </b>
          *
          * <pre>
+         * <code>
          * // Sorted Arrays
          * double[] horizontalDistances = { 2.0, 3.0, 4.0, 5.0 }; // meters
          * double[] heightDiffs = { -0.5, 0.0, +0.5, +1.0 }; // meters, relative to the end point of the hood/barrel
@@ -676,19 +687,36 @@ public class ShooterCalculator {
          *         { 2800, 2900, 3000, 3100 }, // at d=4.0
          *         { 2700, 2800, 2900, 3000 }, // at d=5.0
          * };
+         * </code>
          * </pre>
          *
          * <p>
-         * <i><b>Notes:
+         * <i><b>Notes:</b></i>
          * <p>
+         * <i>
+         * <b>
          * - The emprical data must be measured from the shooter's pivot point.
+         * </b>
+         * </i>
          * <p>
+         * <i>
+         * <b>
          * - The angle grid must be sorted in ascending order.
+         * </b>
+         * </i>
          * <p>
+         * <i>
+         * <b>
          * - The data should be large enough to avoid extrapolation due to out-of-bounds
          * data.
+         * </b>
+         * </i>
          * <p>
+         * <i>
+         * <b>
          * - The RPM speeds use the flywheel RPM.
+         * </b>
+         * </i>
          *
          * @param barrelLength                    The length of the barrel/hood in
          *                                        meters.
@@ -722,9 +750,6 @@ public class ShooterCalculator {
          *                                        the empirical map, with width M.
          * @param heightDiffs                     The height differences in meters for
          *                                        the empirical map, with width N.
-         * @param angles                          The angles in degrees for the
-         *                                        empirical map, in WxH = NxM size. Must
-         *                                        be sorted.
          * @param freeSpeeds                      The free speeds in RPM for the
          *                                        empirical map, in WxH = NxM size. Must
          *                                        be sorted.
@@ -746,18 +771,13 @@ public class ShooterCalculator {
             if (distances == null || heightDiffs == null || freeSpeeds == null || dropFractionMap == null) {
                 throw new IllegalArgumentException("null arrays are not allowed");
             }
-            if (barrelLength < 0
-                    || pivotHeight < 0
-                    || wheelRadius <= 0
-                    || maxFreeRPM <= 0
-                    || maxAngle <= 0) {
+            if (barrelLength < 0 || pivotHeight < 0 || wheelRadius <= 0 || maxFreeRPM <= 0 || maxAngle <= 0) {
                 throw new IllegalArgumentException("invalid shooter config parameters");
             }
             if (minAngle > maxAngle) {
                 throw new IllegalArgumentException("minAngle must be less than or equal to maxAngle");
             }
-            if (freeSpeeds.length != distances.length
-                    || freeSpeeds[0].length != heightDiffs.length) {
+            if (freeSpeeds.length != distances.length || freeSpeeds[0].length != heightDiffs.length) {
                 throw new IllegalArgumentException("the free-speed grid has invalid dimensions");
             }
             this.barrelLength = barrelLength;

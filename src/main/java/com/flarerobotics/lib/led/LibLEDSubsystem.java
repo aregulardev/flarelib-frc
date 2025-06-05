@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  *
  * <p>
  * <i> Note: In order to use simulation, select <b>Hardware -> Addressable
- * LEDs</b> from the topbar in the simulation UI.
+ * LEDs</b> from the topbar in the simulation UI.</i>
  */
 public class LibLEDSubsystem extends SubsystemBase {
     private AddressableLED m_led;

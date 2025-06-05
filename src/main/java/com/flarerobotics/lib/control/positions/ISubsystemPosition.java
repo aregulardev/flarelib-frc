@@ -23,8 +23,8 @@ public interface ISubsystemPosition {
     /**
      * For position-controlled subsystem positions.
      *
-     * @param key
-     *            The getter key.
+     * @param key The getter key, which can be used to differentiate between
+     *            subsystems with the same type.
      * @return The system height.
      */
     default Distance getHeight(String key) {
@@ -43,8 +43,8 @@ public interface ISubsystemPosition {
     /**
      * For position-controlled subsystem positions.
      *
-     * @param key
-     *            The getter key.
+     * @param key The getter key, which can be used to differentiate between
+     *            subsystems with the same type.
      * @return The system's angle in degrees.
      */
     default double getAngle(String key) {
@@ -63,6 +63,8 @@ public interface ISubsystemPosition {
     /**
      * For angular velocity-controlled subsystem positions.
      *
+     * @param key The getter key, which can be used to differentiate between
+     *            subsystems with the same type.
      * @return The system's RPM.
      */
     default double getRPM(String key) {

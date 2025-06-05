@@ -3,7 +3,6 @@ package com.ctre.phoenix6.configs;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
-
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
@@ -11,12 +10,11 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public class TalonUtils {
 
-    private TalonUtils() {
-    }
+    private TalonUtils() {}
 
     /**
      * Gets the current configuration of the given TalonFX.
-     * 
+     *
      * @param fx the TalonFX to get the configuration from.
      * @return The current configuration of the TalonFX.
      */
@@ -43,7 +41,7 @@ public class TalonUtils {
 
     /**
      * Gets the current configuration of the given TalonFXS.
-     * 
+     *
      * @param fxs the TalonFXS to get the configuration from.
      * @return The current configuration of the TalonFXS.
      */

@@ -7,6 +7,11 @@ package com.flarerobotics.lib.container;
 public class DoubleContainer {
     public double m_value;
 
+    /**
+     * Constructs a new DoubleContainer.
+     *
+     * @param value The value to store.
+     */
     public DoubleContainer(double value) {
         m_value = value;
     }

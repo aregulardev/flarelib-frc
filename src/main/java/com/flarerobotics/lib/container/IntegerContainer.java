@@ -7,6 +7,11 @@ package com.flarerobotics.lib.container;
 public class IntegerContainer {
     public int m_value;
 
+    /**
+     * Constructs a new IntegerContainer.
+     *
+     * @param value The value to store.
+     */
     public IntegerContainer(int value) {
         m_value = value;
     }

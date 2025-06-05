@@ -22,7 +22,7 @@ import org.littletonrobotics.junction.Logger;
  * NOTE: The height is based off the carriage.
  *
  * <p>
- * <i>Automatically accounts for the offset provided.
+ * <i>Automatically accounts for the offset provided.</i>
  */
 public class ContinuousAscopeDisplay {
     private final int m_totalStages;

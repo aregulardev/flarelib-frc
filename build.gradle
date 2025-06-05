@@ -212,6 +212,12 @@ task(githubDeploy) {
 }
 createVersionFile.dependsOn(githubDeploy)
 
+javadoc {
+    source = sourceSets.main.allJava
+    classpath += configurations.compileClasspath
+    destinationDir = file("$buildDir/docs/javadoc")
+}
+
 // Spotless format checking
 project.compileJava.dependsOn(spotlessApply)
 spotless {
