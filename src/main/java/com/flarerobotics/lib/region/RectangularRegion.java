@@ -1,8 +1,11 @@
-package com.flarerobotics.lib;
+package com.flarerobotics.lib.region;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
+/**
+ * A rectangular region on the field used to divide field into sections.
+ */
 public class RectangularRegion {
     private final Translation2d bottomLeft;
     private final Translation2d topRight;

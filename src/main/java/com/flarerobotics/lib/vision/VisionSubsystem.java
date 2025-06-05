@@ -2,7 +2,7 @@ package com.flarerobotics.lib.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.flarerobotics.lib.RectangularRegion;
+import com.flarerobotics.lib.region.RectangularRegion;
 import com.flarerobotics.lib.vision.VisionIO.PoseObservationType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;

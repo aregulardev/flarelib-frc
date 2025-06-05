@@ -59,18 +59,18 @@ public class AlignToTagCommand2D extends Command {
     /**
      * The default translational tolerance in meters. Defaults to 0.5 meters.
      */
-    public static final double kDefaultTranslationalToleranceMeters = Meters.convertFrom(0.5, Centimeters);
+    public static double kDefaultTranslationalToleranceMeters = Meters.convertFrom(0.5, Centimeters);
 
     /**
      * The default angular tolerance in meters. Defaults to 1 degree.
      */
-    public static final double kDefaultAngularToleranceDegrees = 1;
+    public static double kDefaultAngularToleranceDegrees = 1;
 
     /**
      * Error counts threshold for when to stop the command. If the error count
      * exceeds this value, the command will stop and send a warning via DS.
      */
-    public static final int kErrorCountThreshold = 15;
+    public static int kErrorCountThreshold = 15;
 
     // Pose Data //
     private Pose2d m_pose;
