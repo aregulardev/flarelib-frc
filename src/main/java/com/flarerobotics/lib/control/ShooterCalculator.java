@@ -122,7 +122,7 @@ public class ShooterCalculator {
      *                        sim period)
      * @param maxTime         The maximum time for the simulation in seconds.
      * @param mass            The mass of the game piece in kg.
-     * @param surfaceArea     The surface area of the game piece in m².
+     * @param surfaceArea     The surface area of the game piece in m^2.
      * @param dragCoefficient The drag coefficient of the game piece.
      *                        Typical values are around 0.47 for a sphere, 1.05 for
      *                        a cube, and 0.04-0.09 for streamlined objects.

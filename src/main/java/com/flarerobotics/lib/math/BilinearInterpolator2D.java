@@ -16,7 +16,7 @@ public class BilinearInterpolator2D {
      *
      * @param X <b>Sorted</b> X-axis grid of length M
      * @param Y <b>Sorted</b> Y-axis grid of length N
-     * @param V M×N matrix of values: V[i][j] = f(X[i], Y[j])
+     * @param V MxN matrix of values: V[i][j] = f(X[i], Y[j])
      */
     public BilinearInterpolator2D(double[] X, double[] Y, double[][] V) {
         if (X.length < 2 || Y.length < 2) throw new IllegalArgumentException("need at least 2 grid points per axis");

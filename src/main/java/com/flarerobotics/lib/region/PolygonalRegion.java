@@ -42,7 +42,7 @@ public class PolygonalRegion {
      * Returns whether the given pose (x, y) lies within this polygon.
      *
      * @param pose The pose to check.
-     * @return True if the pose’s (x, y) is inside or on the boundary.
+     * @return True if the pose's (x, y) is inside or on the boundary.
      */
     public boolean isPoseWithinArea(Pose2d pose) {
         return containsPoint(new Translation2d(pose.getX(), pose.getY()));
