@@ -29,7 +29,7 @@ import org.littletonrobotics.junction.Logger;
  * Limelight, Photon and Photon Simulation.
  */
 public class VisionSubsystem extends SubsystemBase {
-    private final VisionConsumer m_addMesaurement;
+    private final VisionConsumer m_addMeasurement;
     private final VisionIO[] m_cameras;
     private final VisionIOInputsAutoLogged[] m_inputs;
     private final Alert[] m_disconnectedAlerts;
@@ -54,13 +54,13 @@ public class VisionSubsystem extends SubsystemBase {
     /**
      * Constructs a new VisionSubsystem.
      *
-     * @param addMesaurement The consumer to add a vision mesaurement. Recommended
+     * @param addMeasurement The consumer to add a vision measurement. Recommended
      *                       to use a WPILib pose estimator.
      * @param cameras        The IO interfaces to provide for each individual
      *                       camera.
      */
-    public VisionSubsystem(VisionConsumer addMesaurement, VisionIO... cameras) {
-        m_addMesaurement = addMesaurement;
+    public VisionSubsystem(VisionConsumer addMeasurement, VisionIO... cameras) {
+        m_addMeasurement = addMeasurement;
         m_cameras = cameras;
 
         m_cameraStdDevFactors = new double[cameras.length];
@@ -114,7 +114,7 @@ public class VisionSubsystem extends SubsystemBase {
 
             // Loop over pose observations
             for (var observation : m_inputs[cameraIndex].poseObservations) {
-                // Check whether to reject pose mesaurement
+                // Check whether to reject pose measurement
                 boolean rejectPose = observation.tagCount() == 0 // Visible tag check
                         || (observation.tagCount() == 1 && observation.ambiguity() > m_maxAmbiguity) // Ambiguity
                         // threshold
@@ -149,7 +149,7 @@ public class VisionSubsystem extends SubsystemBase {
                 }
 
                 // Push vision observation
-                m_addMesaurement.accept(
+                m_addMeasurement.accept(
                         observation.pose().toPose2d(),
                         observation.timestamp(),
                         VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev)); // in the format of [x, y, theta]
@@ -318,7 +318,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     /**
-     * The consumer functional interface for the <i>addVisionMesaurement</i> method.
+     * The consumer functional interface for the <i>addVisionMeasurement</i> method.
      */
     @FunctionalInterface
     public static interface VisionConsumer {
