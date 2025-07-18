@@ -1,82 +1,80 @@
 package com.flarerobotics.lib.math;
 
 /**
- * A generic 2D bilinear interpolator over an axis-aligned grid. Takes in a
- * matrix input, and outputs a double corresponding to the interpolated result.
+ * A generic 2D bilinear interpolator over an axis-aligned grid. Takes in a matrix input, and
+ * outputs a double corresponding to the interpolated result.
  */
 public class BilinearInterpolator2D {
-    private final double[] X, Y;
-    private final double[][] V;
+	private final double[] m_X, m_Y;
+	private final double[][] m_V;
 
-    /**
-     * Constructs a new BilinearInterpolator2D.
-     *
-     * <p>
-     * (Row i -> X[i], Col j -> Y[j])
-     *
-     * @param X <b>Sorted</b> X-axis grid of length M
-     * @param Y <b>Sorted</b> Y-axis grid of length N
-     * @param V MxN matrix of values: V[i][j] = f(X[i], Y[j])
-     */
-    public BilinearInterpolator2D(double[] X, double[] Y, double[][] V) {
-        if (X.length < 2 || Y.length < 2) throw new IllegalArgumentException("need at least 2 grid points per axis");
-        if (V.length != X.length || V[0].length != Y.length)
-            throw new IllegalArgumentException("value matrix dimensions must match X,Y lengths");
-        this.X = X.clone();
-        this.Y = Y.clone();
-        this.V = new double[X.length][Y.length];
-        for (int i = 0; i < X.length; i++) {
-            System.arraycopy(V[i], 0, this.V[i], 0, Y.length);
-        }
-    }
+	/**
+	 * Constructs a new BilinearInterpolator2D.
+	 *
+	 * <p>
+	 * (Row i -> X[i], Col j -> Y[j])
+	 *
+	 * @param X <b>Sorted</b> X-axis grid of length M
+	 * @param Y <b>Sorted</b> Y-axis grid of length N
+	 * @param V MxN matrix of values: V[i][j] = f(X[i], Y[j])
+	 */
+	public BilinearInterpolator2D(double[] X, double[] Y, double[][] V) {
+		if (X.length < 2 || Y.length < 2) throw new IllegalArgumentException("need at least 2 grid points per axis");
+		if (V.length != X.length || V[0].length != Y.length)
+			throw new IllegalArgumentException("value matrix dimensions must match X,Y lengths");
+		m_X = X.clone();
+		m_Y = Y.clone();
+		m_V = new double[X.length][Y.length];
+		for (int i = 0; i < X.length; i++) { System.arraycopy(V[i], 0, m_V[i], 0, Y.length); }
+	}
 
-    /**
-     * Perform bilinear interpolation at (x, y).
-     * <p>
-     * - If x or y is outside grid boundaries, extrapolates using nearest segment
-     *
-     * @param x The X coordinate.
-     * @param y The Y coordinate.
-     * @return The interpolated value at (x, y).
-     */
-    public double interpolate(double x, double y) {
-        // Find the indices
-        int i1 = findUpperIndex(X, x);
-        int i0 = i1 > 0 ? i1 - 1 : 0; // Safeguard against index underflow
-        int j1 = findUpperIndex(Y, y);
-        int j0 = j1 > 0 ? j1 - 1 : 0; // Safeguard against index underflow
+	/**
+	 * Perform bilinear interpolation at (x, y).
+	 * <p>
+	 * - If x or y is outside grid boundaries, extrapolates using nearest segment
+	 *
+	 * @param x The X coordinate.
+	 * @param y The Y coordinate.
+	 * @return The interpolated value at (x, y).
+	 */
+	public double interpolate(double x, double y) {
+		// Find the indices
+		int i1 = findUpperIndex(m_X, x);
+		int i0 = i1 > 0 ? i1 - 1 : 0; // Safeguard against index underflow
+		int j1 = findUpperIndex(m_Y, y);
+		int j0 = j1 > 0 ? j1 - 1 : 0; // Safeguard against index underflow
 
-        // Corner values
-        double V00 = V[i0][j0];
-        double V10 = V[i1][j0];
-        double V01 = V[i0][j1];
-        double V11 = V[i1][j1];
+		// Corner values
+		double V00 = m_V[i0][j0];
+		double V10 = m_V[i1][j0];
+		double V01 = m_V[i0][j1];
+		double V11 = m_V[i1][j1];
 
-        // Fractional distances
-        double x0 = X[i0], x1 = X[i1];
-        double y0 = Y[j0], y1 = Y[j1];
-        double tx = (x1 == x0) ? 0.0 : (x - x0) / (x1 - x0);
-        double ty = (y1 == y0) ? 0.0 : (y - y0) / (y1 - y0);
+		// Fractional distances
+		double x0 = m_X[i0], x1 = m_X[i1];
+		double y0 = m_Y[j0], y1 = m_Y[j1];
+		double tx = (x1 == x0) ? 0.0 : (x - x0) / (x1 - x0);
+		double ty = (y1 == y0) ? 0.0 : (y - y0) / (y1 - y0);
 
-        // Perform bilinear interpolation
-        double v0 = V00 + tx * (V10 - V00);
-        double v1 = V01 + tx * (V11 - V01);
-        return v0 + ty * (v1 - v0);
-    }
+		// Perform bilinear interpolation
+		double v0 = V00 + tx * (V10 - V00);
+		double v1 = V01 + tx * (V11 - V01);
+		return v0 + ty * (v1 - v0);
+	}
 
-    // Helper: find smallest idx such that A[idx] >= x
-    private static int findUpperIndex(double[] A, double x) {
-        int lo = 0, hi = A.length - 1;
+	// Helper: find smallest idx such that A[idx] >= x
+	private static int findUpperIndex(double[] A, double x) {
+		int lo = 0, hi = A.length - 1;
 
-        if (x <= A[0]) return 0; // Left extrapolation
-        if (x >= A[hi]) return hi; // Right extrapolation
+		if (x <= A[0]) return 0; // Left extrapolation
+		if (x >= A[hi]) return hi; // Right extrapolation
 
-        // Simple binary search
-        while (lo + 1 < hi) {
-            int mid = lo + (hi - lo) / 2; // Calculate midpoint, avoid int overflow
-            if (A[mid] >= x) hi = mid;
-            else lo = mid;
-        }
-        return hi;
-    }
+		// Simple binary search
+		while (lo + 1 < hi) {
+			int mid = lo + (hi - lo) / 2; // Calculate midpoint, avoid int overflow
+			if (A[mid] >= x) hi = mid;
+			else lo = mid;
+		}
+		return hi;
+	}
 }

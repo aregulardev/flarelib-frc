@@ -8,66 +8,41 @@ import edu.wpi.first.units.measure.Distance;
  * An interface allowing users to have a custom enum of subsystem positions.
  *
  * <p>
- * Useful for storing arm positions along with the elevator positions.
+ * Useful for storing data together, such as arm positions along with elevator positions.
  */
 public interface ISubsystemPosition {
-    /**
-     * For linear mechanism positions.
-     *
-     * @return The system height.
-     */
-    default Distance getHeight() {
-        return Meters.of(0);
-    }
+	/**
+	 * For linear mechanism positions.
+	 *
+	 * @return The system height.
+	 */
+	default Distance getHeight() { return Meters.of(0); }
 
-    /**
-     * For position-controlled subsystem positions.
-     *
-     * @param key The getter key, which can be used to differentiate between
-     *            subsystems with the same type.
-     * @return The system height.
-     */
-    default Distance getHeight(String key) {
-        return Meters.of(0);
-    }
+	// For the getAngle methods, we use a subsystem id subsystem in case multiple pivots are
+	// present.
 
-    /**
-     * For position-controlled subsystem positions.
-     *
-     * @return The system's angle in degrees.
-     */
-    default double getAngle() {
-        return 0;
-    }
+	/**
+	 * For position-controlled subsystem positions.
+	 *
+	 * @return The system's angle in degrees.
+	 */
+	default double getAngle() { return 0; }
 
-    /**
-     * For position-controlled subsystem positions.
-     *
-     * @param key The getter key, which can be used to differentiate between
-     *            subsystems with the same type.
-     * @return The system's angle in degrees.
-     */
-    default double getAngle(String key) {
-        return 0;
-    }
+	/**
+	 * For position-controlled subsystem positions. Used for when there is more than 1 pivot
+	 * subsystem.
+	 *
+	 * @param id The ID of the pivot subsystem.
+	 * @return The system's angle in degrees.
+	 */
+	default double getAngle(String id) {
+		return 0;
+	}
 
-    /**
-     * For angular velocity-controlled subsystem positions.
-     *
-     * @return The system's RPM.
-     */
-    default double getRPM() {
-        return 0;
-    }
-
-    /**
-     * For angular velocity-controlled subsystem positions.
-     *
-     * @param key The getter key, which can be used to differentiate between
-     *            subsystems with the same type.
-     * @return The system's RPM.
-     */
-    default double getRPM(String key) {
-        return 0;
-    }
+	/**
+	 * For angular velocity-controlled subsystem positions.
+	 *
+	 * @return The system's RPM.
+	 */
+	default double getRPM() { return 0; }
 }

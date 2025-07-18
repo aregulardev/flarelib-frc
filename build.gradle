@@ -228,7 +228,8 @@ spotless {
         }
         toggleOffOn()
         importOrder()
-        palantirJavaFormat()
+        // palantirJavaFormat()
+        eclipse().configFile("custom-formatter.xml")
         removeUnusedImports()
         trimTrailingWhitespace()
         formatAnnotations()
