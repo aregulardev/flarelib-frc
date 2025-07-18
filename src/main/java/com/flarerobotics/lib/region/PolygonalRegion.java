@@ -16,7 +16,7 @@ public class PolygonalRegion {
 	/**
 	 * Constructs a new PolygonalRegion.
 	 *
-	 * @param vertices The ordered list of corner points (A, B, C, …). Must form a simple
+	 * @param vertices The ordered list of corner points (A, B, C, ...). Must form a simple
 	 *                 (non-self-intersecting) polygon.
 	 */
 	public PolygonalRegion(List<Translation2d> vertices) {
