@@ -92,19 +92,19 @@ public class CascadeAscopeDisplay {
 		// Reverse the stage order so stage=1 is the top (largest fraction).
 		int reversedStage = m_stages - stage + 1;
 
-		// 1) Clamp raw height to avoid overshooting once offset is added.
+		// Clamp raw height to avoid overshooting once offset is added.
 		double rawHeight = MathUtil.clamp(m_heightMeters.get() + m_offset, 0,
 				Math.max(0.0, m_elevatorMaxHeight + m_offset));
 
-		// 2) Compute fraction for this stage (top stage gets fraction=1.0, bottom stage
+		// Compute fraction for this stage (top stage gets fraction=1.0, bottom stage
 		// fraction=1/m_stages).
 		double fraction = (double) reversedStage / (double) m_stages;
 		double fractionHeight = fraction * rawHeight;
 
-		// 3) Add offset as a baseline.
+		// Add offset as a baseline.
 		double zHeight = fractionHeight; // + m_offset;
 
-		// 4) Final clamp to ensure we never exceed physical max.
+		// Final clamp to ensure we never exceed physical max.
 		zHeight = MathUtil.clamp(zHeight, 0, m_elevatorMaxHeight);
 
 		// Create the Pose3d at zHeight, rotated by m_angle.

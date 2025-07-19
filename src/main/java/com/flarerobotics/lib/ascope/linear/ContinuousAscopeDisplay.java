@@ -32,15 +32,12 @@ public class ContinuousAscopeDisplay {
 
 	private final double[] m_stageMaxHeights;
 
-	/**
-	 * Physical order of stages.
-	 */
+	// The physical order of stages.
 	private final int[] m_physicalOrder;
 
-	/**
-	 * The pose offset applied to the supplied pose. Useful for situations where a mechanism pose
-	 * is provided instead of a carriage pose.
-	 */
+	
+	// The pose offset applied to the supplied pose. Useful for situations where a mechanism pose
+	// is provided instead of a carriage pose.
 	private final double m_offset;
 
 	/**
@@ -56,7 +53,7 @@ public class ContinuousAscopeDisplay {
 	 */
 	public ContinuousAscopeDisplay(String name, int totalStages, double maxHeightMeters, double offset,
 			Supplier<Double> heightSupplier, Supplier<Rotation3d> angle) {
-		if (totalStages < 1) { throw new IllegalArgumentException("At least 1 stage required"); }
+		if (totalStages < 1) throw new IllegalArgumentException("At least 1 stage required");
 		m_name = name;
 		m_totalStages = totalStages;
 		m_maxHeight = maxHeightMeters;
@@ -131,23 +128,22 @@ public class ContinuousAscopeDisplay {
 	 * @return The AdvantageScope zero-position relative pose.
 	 */
 	public Pose3d getStagePose(int stage) {
-		// Step 1: figure out how much each stage has extended.
+		// Figure out how much each stage has extended.
 		double total = MathUtil.clamp(m_heightSupplier.get() + m_offset, 0, m_maxHeight);
 
 		// Check to allow for 1-stage elevators:
-		if (m_totalStages == 1) { return createPose(total); }
+		if (m_totalStages == 1) return createPose(total);
 
 		double[] ext = computeExtensions(total);
-		// ext[0] = how far Stage 1 extended
-		// ext[1] = how far Stage 2 extended
+		// ext[0] = how far Stage 1 extended,
+		// ext[1] = how far Stage 2 extended,
 		// etc.
 
-		// Step 2: sum up the relevant extensions in physical order from the bottom up
-		// until we reach 'stage'.
+		// Sum up the relevant extensions in physical order from the bottom up until we reach 'stage'.
 		// Because each stage that is below this stage physically lifts it.
 		double z = 0.0;
 		for (int i = 0; i < m_physicalOrder.length; i++) {
-			int st = m_physicalOrder[i]; // e.g. 2,3,4,1
+			int st = m_physicalOrder[i];
 			z += ext[st - 1]; // add that stage's extension
 			if (st == stage) {
 				// we've reached the requested stage, so stop summing
