@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import edu.wpi.first.wpilibj.DriverStation;
+import java.util.function.Supplier;
 
 /**
  * A generic utility class for TalonFX and TalonFXS.
@@ -50,5 +51,33 @@ public class TalonUtils {
 		}
 
 		return config;
+	}
+
+	/**
+	 * Tries to apply the given function until a valid Ok status code is reached, or until the
+	 * maximum number of tries is exceeded. The logged values can be checked from the
+	 * {@link StatusCode} enum.
+	 *
+	 * @param applierFunction The function interacts with hardware and returns the status code.
+	 * @param numMaxTries     The maximmum number of tries before canceling.
+	 * @param desc            The description of the hardware interaction. For example:
+	 *                        <code>"Applying the configuration to elevator motor #1"</code>
+	 * @return True if an Ok status code was reached within the given attempts, false otherwise.
+	 */
+	public static boolean retryUntilOk(Supplier<StatusCode> applierFunction, int numMaxTries, String desc) {
+		for (int i = 0; i < numMaxTries; i++) {
+			StatusCode status = applierFunction.get();
+			if (!status.isOK()) {
+				DriverStation.reportWarning(desc + ": An error occured while executing (code " + status.value
+						+ "), retrying (attempt #" + (i + 1) + " / " + numMaxTries, false);
+				continue;
+			}
+
+			DriverStation.reportWarning(desc, false);
+			return true;
+		}
+
+		DriverStation.reportWarning(desc + ": Failed to apply within " + numMaxTries + " attempts", true);
+		return false;
 	}
 }
