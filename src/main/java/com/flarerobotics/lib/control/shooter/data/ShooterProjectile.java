@@ -16,6 +16,7 @@ public class ShooterProjectile {
 	public Pose3d pose;
 	public double lastUpdate = -1;
 	public double shotAt;
+	public boolean isFrozen;
 
 	/**
 	 * Constructs a new ShooterProjectile.

@@ -2,6 +2,7 @@ package com.flarerobotics.lib.control.shooter;
 
 import com.flarerobotics.lib.container.Vector3;
 import com.flarerobotics.lib.control.shooter.data.LibShooterDescriptor;
+import com.flarerobotics.lib.control.shooter.data.ProjectileTarget;
 import com.flarerobotics.lib.control.shooter.data.ShooterProjectile;
 import com.flarerobotics.lib.control.shooter.data.ShooterProjectileType;
 import com.flarerobotics.lib.control.shooter.data.ShooterState;
@@ -50,16 +51,9 @@ public class ShooterCalculator {
 	public static double kMaxRollNoiseRad = Math.toRadians(2);
 
 	/**
-	 * The list of targets' poses for the projectiles. Must have the same order as
-	 * {@link #kProjectileTargetTolerances} and match its size.
+	 * The list of projectile targets to use for trajectory visualization.
 	 */
-	public static List<Pose3d> kProjectileTargets = List.of();
-
-	/**
-	 * The list of targets' pose tolerances for the projectiles. Must have the same order as
-	 * {@link #kProjectileTargets} and match its size.
-	 */
-	public static List<Double> kProjectileTargetTolerances = List.of();
+	public static List<ProjectileTarget> kProjectileTargets = List.of();
 
 	/**
 	 * The default tolerance for the projectile target in meters.
@@ -191,33 +185,36 @@ public class ShooterCalculator {
 		List<Pose3d> poses = new ArrayList<>();
 		List<ShooterProjectile> newProjectiles = new ArrayList<>();
 		for (ShooterProjectile projectile : list) {
+			// Timer not initialized, first run
 			if (projectile.lastUpdate == -1) {
 				projectile.lastUpdate = Timer.getFPGATimestamp();
 				projectile.shotAt = Timer.getFPGATimestamp();
 			}
+			// No physics updates for frozen projectiles
+			if (projectile.isFrozen) { newProjectiles.add(projectile); poses.add(projectile.pose); continue; }
+
 			double now = Timer.getFPGATimestamp();
 			double dt = now - projectile.lastUpdate;
 			// Compute new state
 			projectile.velocity = projectile.velocity.add(projectile.acceleration.scale(dt));
 			// Linear approximation: dx = v * t + 1/2 at^2
 			Vector3 dx = projectile.velocity.scale(dt).add(projectile.acceleration.scale(0.5 * dt * dt));
+			Pose3d lastPose = projectile.pose; // Save pose
 			projectile.pose = new Pose3d(projectile.pose.getX() + dx.x, projectile.pose.getY() + dx.y,
 					projectile.pose.getZ() + dx.z, rotationFromVelocity(projectile.velocity));
 
 			// Check target hits
-			boolean didHit = false;
-			int idx = 0;
-			for (Pose3d target : kProjectileTargets) {
-				double tolerance = kDefaultProjectileTolerance;
-				if (kProjectileTargetTolerances.size() - 1 >= idx) tolerance = kProjectileTargetTolerances.get(idx);
-				if (target.getTranslation().getDistance(projectile.pose.getTranslation()) <= tolerance) {
-					didHit = true;
+			boolean destroy = false;
+			for (ProjectileTarget target : kProjectileTargets) {
+				// We use 2 poses to check for hit, for accuracy purposes
+				boolean hit = target.checkHit(lastPose, projectile.pose);
+				if (hit && !target.hideProjectileOnHit) {
+					projectile.isFrozen = true;
 					break;
-				}
-				idx++;
+				} else if (hit && target.hideProjectileOnHit) { destroy = true; break; }
 			}
 			// End condition
-			if (projectile.pose.getZ() >= 0 && !didHit
+			if (projectile.pose.getZ() >= 0 && !destroy
 					&& Timer.getFPGATimestamp() - projectile.shotAt <= kTrajectoryMaxTime) {
 				poses.add(projectile.pose);
 				newProjectiles.add(projectile);
