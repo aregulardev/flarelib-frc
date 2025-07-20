@@ -1,43 +1,122 @@
 # FlareLib for FRC
 
-FlareLib-FRC is a robotics library designed for use in FIRST Robotics Competition (FRC) projects. It provides utilities, subsystems, and helpers to simplify robot development, including support for vision processing, localization, and simulation. The library integrates with WPILib and various vendor libraries to enhance functionality.
+FlareLib is a lightweight Java library that builds upon WPILib to make robot software development more fast and convenient for FIRST Robotics Competition (FRC) teams. The library provides a set of subsystems, utilities, and simulation tools designed to:
 
-## Features
+* Enable off-robot testing, driver practice and robot tuning using realistic simulations.
+* Provide implementations for common tasks such as vision-based alignment, kinematic computations, and autonomous routine management.
+
+FlareLib lets teams focus on strategy and tuning rather than boilerplate functionality.
+
+## Key Features
 
 ### Vision Processing
-- A subsystem template for robot localization using AprilTags. Compatible with Limelight, PhotonVision, and PhotonVision simulation.
-- Automatic AprilTag alignment via the `AlignToTagCommand2D` class.
 
-### Geometry Utilities
-- Provides utilities for working with WPILib's `Pose2d` and `Pose3d` classes, including translations and rotations.
+* **AprilTag Localization**: A vision subsystem template for reliable robot pose estimation using AprilTags, supporting both Limelight, PhotonVision hardware and simulations.
+* **Automated Alignment**: Command-based `AlignToTagCommand2D` for centering and orienting the robot relative to detected fiducials.
 
 ### Simulation Support
-- Integration with WPILib simulation tools, including `RoboRioSim` for simulating RoboRIO behavior.
-- Custom subsystem simulation for cascade and continuous elevators along with an arm/pivot simulation.
+
+* **AdvantageScope Subsystem Mocks**: Simulated AdvantageScope models for elevators (cascade-continuous) and arm/pivot assemblies, complete with configurable physics parameters.
+* **Battery Simulation**: Simulated real-life batteries via `BatteryUpdater`.
 
 ### Autonomous Routines
-- Includes an autonomous routine manager, which automatically handles the autonomous period.
-- Allows for path generation from string, can be useful to fix autonomous conflicts right before a match.
+
+* **Routine Scheduler**: A simple manager for sequencing and monitoring autonomous commands.
+* **String-Based Routine Definitions**: Define trajectories via string patterns for rapid on-the-fly adjustments via dashboard inputs.
 
 ### Logging and Diagnostics
-- Integration with AdvantageKit for logging and diagnostics.
-- Support for NT4 (NetworkTables 4) publishing and WPILOG file writing.
 
-### Javadocs
-- Includes Javadocs for readability and documentation.
+* **AdvantageKit Integration**: Built‑in hooks for recording system data via ShuffleBoard and AdvantageKit.
+* **NetworkTables 4**: Telemetry streaming to external dashboards, such as ShuffleBoard, Elastic and SmartDashboard.
 
-## Getting Started
+### Other Utilities
+* Classes for geometry and vector math, shooter calculations, field region divisions, and more.
+
+## Installation
 
 ### Prerequisites
-- Java 17
-- WPILib 2025
-- Gradle (included with WPILib projects)
 
-### Installation and Deployment
-1. Download the repository and extract it.
-2. If you already have some code, you may add it to the `frc/robot` package.
-3. Then, build your code while connected to the internet first to download the vendor libraries.
-4. Finally, deploy your code into your robot.
+* Java 17
+* WPILib 2025
+* Gradle (bundled with WPILib projects)
+
+*Note: The following dependencies are pre-installed for FlareLib:*
+* *AdvantageKit (v4.1.2)*
+* *MapleSim (v0.3.11)*
+* *PathPlanner (v2025.2.7)*
+* *Phoenix 5 (v5.35.1) and 6 (v25.3.2)*
+* *Photonlib (v2025.3.1)*
+* *ReduxLib (v2025.0.1)*
+* *REVLib (v2025.0.3)*
+* *Studica (v2025.0.0)*
+* *ThriftyLib (v2025.1.1)*
+* *YAGSL (v2025.8.0)*
+
+  
+### Adding FlareLib to Your Project
+
+1. Clone the repository to a directory:
+   ```bash
+   git clone https://github.com/aregulardev/flarelib-frc.git
+   ```
+2. Copy your dependencies, repositories, vendordeps to the cloned repository. 
+3. Move your code, classes, packages, etc. to the new repository after the dependencies.
+4. Build and deploy using the standard WPILib tools.
+
+**Note: Check for updates and fixes regularly and update the ID at the end in Step #2.**
+
+## Usage Example
+
+```java
+import com.flarerobotics.lib.ascope.linear.ContinuousAscopeDisplay;
+(...)
+
+public class RobotContainer {
+    (...)
+    // AdvantageScope integration
+    private final ContinuousAscopeDisplay m_display;
+
+    public RobotContainer() {
+        (...)
+        // A perfectly upright 2-stage continuous elevator with a max height of 1.81m. 
+        m_display = new ContinuousAscopeDisplay("elevator", 2, 1.81, 0, m_elevator::getHeightMeters, () -> Rotation3d.kZero)
+    }
+}
+```
+
+## Javadocs
+The Javadocs are accessible at https://aregulardev.github.io/flarelib-docs/.
+
+## Quick Module Overview
+
+### com.flarerobotics.lib
+* **subsystem**: Includes preset adressable LED and Vision subsystems.
+* **sim**: Includes simulation models, e.g. `ElevatorSimTilted`.
+* **region**: Includes 2D field regions.
+* **math**: Includes math modules, such as `PhysicsUtil` and `BilinearInterpolator2D`. 
+* **control**: Includes classes related to control, such as `RotationalKinematics`, `ShooterCalculator`.
+* **container**: Includes container classes, e.g. `Vector3` or `IntegerContainer`.
+* **auto**: Includes classes related to the autonomous period, such as `AutonomousManager` or `LocalADStarAK`. 
+* **ascope**: Includes classes for displaying subsystems in AdvantageScope, such as `CascadeAscopeDisplay`.
+
+### ctre.phoenix6.configs
+* Includes a CTRE Talon utility class, `TalonUtils`.
+
+### com.revrobotics.spark
+* Includes a REV Spark utility class, `SparkUtils`.
+
+## Contributing to FlareLib
+
+Contributions are welcome under the following process:
+
+1. Fork the repository and create a descriptive feature branch.
+2. Adhere to WPILib coding standards and conventions, and project formatting (see [custom-formatter.xml](custom-formatter.xml)).
+3. Submit a pull request with a clear summary of changes and any relevant test results.
 
 ## License
-- This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details.
+
+This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for the full text and details.
+
+---
+
+*Maintained by the Flare Robotics Software Team*
