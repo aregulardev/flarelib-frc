@@ -38,19 +38,19 @@ public class PivotAscopeDisplay {
 	 *
 	 * @param name                 The name of the system.
 	 * @param basePose             The pose supplier for the root of the arm.
-	 * @param segmentLengthsMeters The length of each joint. Must have the same length as the joint angles and the
-     *                             extension supplier, and the joint count.
+	 * @param segmentLengthsMeters The length of each joint. Must have the same length as the joint
+	 *                             angles and the extension supplier, and the joint count.
 	 * @param jointAnglesRads      The supplier for the joint angles, in radians.
 	 * @param extensionSupplier    The extensions supplier in meters, used for telescoping /
 	 *                             extending arms.
-     * @throws IllegalArgumentException If the array lengths don't match.
+	 * @throws IllegalArgumentException If the array lengths don't match.
 	 */
 	public PivotAscopeDisplay(String name, Supplier<Pose3d> basePose, double[] segmentLengthsMeters,
 			Supplier<Rotation3d[]> jointAnglesRads, Supplier<Double[]> extensionSupplier) {
-        if (extensionSupplier.get().length != segmentLengthsMeters.length
-                || jointAnglesRads.get().length != segmentLengthsMeters.length) {
-            throw new IllegalArgumentException("Invalid length parameters provided to PivotAscopeDisplay");
-        }
+		if (extensionSupplier.get().length != segmentLengthsMeters.length
+				|| jointAnglesRads.get().length != segmentLengthsMeters.length) {
+			throw new IllegalArgumentException("Invalid length parameters provided to PivotAscopeDisplay");
+		}
 
 		m_name = name;
 		m_jointCount = segmentLengthsMeters.length;
@@ -69,7 +69,7 @@ public class PivotAscopeDisplay {
 	 * @param angleSupplier     The supplier for the arm angle, in radians.
 	 * @param extensionSupplier The extensions supplier in meters, used for telescoping / extending
 	 *                          arms.
-     * @throws IllegalArgumentException If the array lengths don't match.
+	 * @throws IllegalArgumentException If the array lengths don't match.
 	 */
 	public PivotAscopeDisplay(String name, Supplier<Pose3d> basePose, double length, Supplier<Rotation3d> angleSupplier,
 			Supplier<Double> extensionSupplier) {
@@ -100,19 +100,19 @@ public class PivotAscopeDisplay {
 	 * @return The pose of the end effector.
 	 */
 	public Pose3d computeEndEffectorPose() {
-        return getJointPose(m_jointCount, new Transform3d());
+		return getJointPose(m_jointCount, new Transform3d());
 	}
 
-    /**
+	/**
 	 * Computes the final pose of the arm's end effector using forward kinematics.
-	 * 
-     * @param offset The offset applied to the final position.
+	 *
+	 * @param offset The offset applied to the final position.
 	 * @return The pose of the end effector.
 	 */
 	public Pose3d computeEndEffectorPose(Transform3d offset) {
-        return getJointPose(m_jointCount, offset);
+		return getJointPose(m_jointCount, offset);
 	}
-    
+
 	/**
 	 * Returns the pose of the specified joint (1-indexed). Joint 1 is the first joint (i.e. the
 	 * transformation after the base, including the first segment's rotation and translation).
@@ -128,8 +128,8 @@ public class PivotAscopeDisplay {
 		// Start with the base pose.
 		Pose3d pose = m_basePose.get();
 
-        Rotation3d[] rotations = m_jointAngles.get();
-        Double[] extensions = m_extensionSupplier.get();
+		Rotation3d[] rotations = m_jointAngles.get();
+		Double[] extensions = m_extensionSupplier.get();
 
 		// Chain transformations for joints 1 up to the specified joint.
 		// Note: array indexing is 0-indexed.

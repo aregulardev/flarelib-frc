@@ -35,7 +35,6 @@ public class ContinuousAscopeDisplay {
 	// The physical order of stages.
 	private final int[] m_physicalOrder;
 
-	
 	// The pose offset applied to the supplied pose. Useful for situations where a mechanism pose
 	// is provided instead of a carriage pose.
 	private final double m_offset;
