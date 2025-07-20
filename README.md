@@ -1,6 +1,6 @@
 # FlareLib for FRC
 
-FlareLib is a lightweight Java library that builds upon WPILib to make robot software development more fast and convenient for FIRST Robotics Competition (FRC) teams. The library provides a set of subsystems, utilities, and simulation tools designed to:
+FlareLib is a lightweight Java library designed by Flare Robotics #8054 that builds upon WPILib to make robot software development more fast and convenient for FIRST Robotics Competition (FRC) teams. The library provides a set of subsystems, utilities, and simulation tools designed to:
 
 * Enable off-robot testing, driver practice and robot tuning using realistic simulations.
 * Provide implementations for common tasks such as vision-based alignment, kinematic computations, and autonomous routine management.
