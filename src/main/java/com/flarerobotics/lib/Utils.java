@@ -17,7 +17,7 @@ public class Utils {
 	}
 
 	/**
-	 * Returns wether a number is close to another number by a negligible amount (10^-6).
+	 * Returns whether a number is close to another number by a negligible amount (10^-6).
 	 *
 	 * @param a The first number.
 	 * @param b The second number.

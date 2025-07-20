@@ -64,7 +64,7 @@ public class RectangularRegion {
 	public double getMaxY() { return topRight.getY(); }
 
 	/**
-	 * Returns wether the given pose is bound within the region.
+	 * Returns whether the given pose is bound within the region.
 	 *
 	 * @param pose The pose to check.
 	 * @return True if bound within the region.

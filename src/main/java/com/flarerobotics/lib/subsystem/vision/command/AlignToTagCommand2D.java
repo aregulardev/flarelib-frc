@@ -57,7 +57,7 @@ public class AlignToTagCommand2D extends Command {
 
 	// Static Config Variables //
 	/**
-	 * Wether details such as the PID error and setpoint should be logged.
+	 * Whether details such as the PID error and setpoint should be logged.
 	 */
 	public static boolean kDoDetailedDebug = false;
 
@@ -316,7 +316,7 @@ public class AlignToTagCommand2D extends Command {
 	}
 
 	/**
-	 * Sets wether basic debugging is enabled or not. Defaults to true.
+	 * Sets whether basic debugging is enabled or not. Defaults to true.
 	 *
 	 * @param enabled True if enabled.
 	 * @return The instance for chaining.

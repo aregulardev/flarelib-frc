@@ -194,7 +194,7 @@ public class LibVisionSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * Returns wether the vision detects a valid target.
+	 * Returns whether the vision detects a valid target.
 	 *
 	 * @return True if a valid target is detected.
 	 */
@@ -204,7 +204,7 @@ public class LibVisionSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * Returns wether the vision detects a valid target.
+	 * Returns whether the vision detects a valid target.
 	 *
 	 * @param cameraIndex The index of the camera.
 	 * @return True if a valid target is detected.
