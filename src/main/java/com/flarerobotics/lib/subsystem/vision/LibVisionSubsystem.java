@@ -2,8 +2,8 @@ package com.flarerobotics.lib.subsystem.vision;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.flarerobotics.lib.region.RectangularRegion;
 import com.flarerobotics.lib.subsystem.vision.LibVisionIO.PoseObservationType;
+import com.flarerobotics.lib.utils.Tracer;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -11,7 +11,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Distance;
@@ -20,6 +19,9 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.LinkedList;
 import java.util.List;
+import org.dyn4j.geometry.Convex;
+import org.dyn4j.geometry.Rectangle;
+import org.dyn4j.geometry.Vector2;
 import org.littletonrobotics.junction.Logger;
 
 // Code modified from the AdvantageKit vision template.
@@ -31,14 +33,22 @@ import org.littletonrobotics.junction.Logger;
 public class LibVisionSubsystem extends SubsystemBase {
 	private final VisionConsumer m_addMeasurement;
 	private final LibVisionIO[] m_cameras;
-	private final VisionIOInputsAutoLogged[] m_inputs;
+	private final LibVisionIOInputsAutoLogged[] m_inputs;
 	private final Alert[] m_disconnectedAlerts;
 
 	/** The AprilTag layout of the field. */
 	public static final AprilTagFieldLayout kLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 	/** The region representing the rectangular field. */
-	public static final RectangularRegion kFieldRegion = new RectangularRegion(new Translation2d(0.0, 0.0),
-			new Translation2d(kLayout.getFieldLength(), kLayout.getFieldWidth())); // 2025 Field Size
+	// public static final RectangularRegion kFieldRegion = new RectangularRegion(new
+	// Translation2d(0.0, 0.0),
+	// new Translation2d(kLayout.getFieldLength(), kLayout.getFieldWidth())); // 2025 Field Size
+
+	/** The region representing the rectangular field. */
+	public static final Convex kFieldRegion = new Rectangle(kLayout.getFieldLength(), kLayout.getFieldWidth());
+
+	static {
+		kFieldRegion.translate(kLayout.getFieldLength() / 2, kLayout.getFieldWidth() / 2);
+	}
 
 	// Subsystem configuration variables
 	private double[] m_cameraStdDevFactors;
@@ -66,19 +76,20 @@ public class LibVisionSubsystem extends SubsystemBase {
 		m_cameraStdDevFactors = new double[cameras.length];
 
 		// Initialize inputs
-		m_inputs = new VisionIOInputsAutoLogged[cameras.length];
-		for (int i = 0; i < m_inputs.length; i++) { m_inputs[i] = new VisionIOInputsAutoLogged(); }
+		m_inputs = new LibVisionIOInputsAutoLogged[cameras.length];
+		for (int i = 0; i < m_inputs.length; i++) { m_inputs[i] = new LibVisionIOInputsAutoLogged(); }
 
 		// Initialize disconnected alerts for each camera
 		m_disconnectedAlerts = new Alert[cameras.length];
 		for (int i = 0; i < m_inputs.length; i++) {
 			m_disconnectedAlerts[i] = new Alert(
-					"Vision camera with index '" + Integer.toString(i) + "'' is disconnected.", AlertType.kWarning);
+					"Vision camera with index '" + Integer.toString(i) + "' is disconnected.", AlertType.kWarning);
 		}
 	}
 
 	@Override
 	public void periodic() {
+		Tracer.start("VisionPeriodic");
 		// Process inputs for each camera
 		for (int i = 0; i < m_cameras.length; i++) {
 			m_cameras[i].updateInputs(m_inputs[i]);
@@ -110,13 +121,14 @@ public class LibVisionSubsystem extends SubsystemBase {
 
 			// Loop over pose observations
 			for (var observation : m_inputs[cameraIndex].poseObservations) {
+				var obs = observation.pose().toPose2d();
 				// Check whether to reject pose measurement
 				boolean rejectPose = observation.tagCount() == 0 // Visible tag check
 						|| (observation.tagCount() == 1 && observation.ambiguity() > m_maxAmbiguity) // Ambiguity
 						// threshold
 						// with 1 tag
 						|| Math.abs(observation.pose().getZ()) > m_maxHeight // Height limit threshold
-						|| !kFieldRegion.isPoseWithinArea(observation.pose().toPose2d()); // Field boundary check
+						|| !kFieldRegion.contains(new Vector2(obs.getX(), obs.getY())); // Field boundary check
 
 				// Add pose to log
 				robotPoses.add(observation.pose());
@@ -162,6 +174,8 @@ public class LibVisionSubsystem extends SubsystemBase {
 			allRobotPoses.addAll(robotPoses);
 			allRobotPosesAccepted.addAll(robotPosesAccepted);
 			allRobotPosesRejected.addAll(robotPosesRejected);
+
+			Tracer.finish("VisionPeriodic");
 		}
 
 		// Log summary data
@@ -225,7 +239,7 @@ public class LibVisionSubsystem extends SubsystemBase {
 	 *
 	 * @return The input array.
 	 */
-	public VisionIOInputsAutoLogged[] getCameraInputs() { return m_inputs; }
+	public LibVisionIOInputsAutoLogged[] getCameraInputs() { return m_inputs; }
 
 	/**
 	 * Sets the height threshold (invalidation point) for the vision pose. Defaults to 1 meter.
@@ -290,6 +304,15 @@ public class LibVisionSubsystem extends SubsystemBase {
 	 */
 	@FunctionalInterface
 	public static interface VisionConsumer {
+		/**
+		 * Adds a vision measurement to the pose estimator.
+		 *
+		 * @param visionRobotPoseMeters    The observed robot pose, in meters.
+		 * @param timestampSeconds         The timestamp of the observation, in seconds.
+		 * @param visionMeasurementStdDevs The standard deviations of the observation, in the format of
+		 *                                 [x, y, theta], where x and y are in meters and theta is in
+		 *                                 radians.
+		 */
 		public void accept(Pose2d visionRobotPoseMeters, double timestampSeconds,
 				Matrix<N3, N1> visionMeasurementStdDevs);
 	}

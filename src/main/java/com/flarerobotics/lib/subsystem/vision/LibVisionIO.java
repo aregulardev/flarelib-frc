@@ -11,7 +11,7 @@ public interface LibVisionIO {
 
 	/** The inputs class for the Vision Subsystem. */
 	@AutoLog
-	public static class VisionIOInputs {
+	public static class LibVisionIOInputs {
 		public boolean isCameraConnected = false;
 		public TargetObservation latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
 		public PoseObservation[] poseObservations = new PoseObservation[0];
@@ -41,12 +41,12 @@ public interface LibVisionIO {
 	 *
 	 * @param inputs The inputs.
 	 */
-	public default void updateInputs(VisionIOInputs inputs) {}
+	public default void updateInputs(LibVisionIOInputs inputs) {}
 
 	/**
 	 * Sets the current pipeline index.
 	 *
 	 * @param pipelineIndex The index.
 	 */
-	public void setPipeline(int pipelineIndex);
+	public default void setPipeline(int pipelineIndex) {};
 }

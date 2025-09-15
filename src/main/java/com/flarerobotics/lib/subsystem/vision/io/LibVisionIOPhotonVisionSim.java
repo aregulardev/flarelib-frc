@@ -18,10 +18,14 @@ public class LibVisionIOPhotonVisionSim extends LibVisionIOPhotonVision {
 	/**
 	 * Constructs a new LibVisionIOPhotonVisionSim.
 	 *
-	 * @param name         The name of the camera.
-	 * @param poseSupplier Supplier for the robot pose to use in simulation.
+	 * @param name             The name of the camera.
+	 * @param robotToCamera    The 3D position of the camera relative to the robot (the offset from
+	 *                         the center).
+	 * @param poseSupplier     Supplier for the robot pose to use in simulation.
+	 * @param cameraProperties The camera's properties.
 	 */
-	public LibVisionIOPhotonVisionSim(String name, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
+	public LibVisionIOPhotonVisionSim(String name, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier,
+			SimCameraProperties cameraProperties) {
 		super(name, robotToCamera);
 		m_poseSupplier = poseSupplier;
 
@@ -32,13 +36,15 @@ public class LibVisionIOPhotonVisionSim extends LibVisionIOPhotonVision {
 		}
 
 		// Adds the simulation camera
-		var cameraProperties = new SimCameraProperties();
 		m_cameraSim = new PhotonCameraSim(m_camera, cameraProperties, LibVisionSubsystem.kLayout);
+		m_cameraSim.enableDrawWireframe(true);
+		m_cameraSim.enableRawStream(false);
+		m_cameraSim.enableProcessedStream(true);
 		m_visionSim.addCamera(m_cameraSim, robotToCamera);
 	}
 
 	@Override
-	public void updateInputs(VisionIOInputs inputs) {
+	public void updateInputs(LibVisionIOInputs inputs) {
 		m_visionSim.update(m_poseSupplier.get());
 		super.updateInputs(inputs);
 	}

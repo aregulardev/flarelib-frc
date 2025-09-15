@@ -10,11 +10,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 /** IO implementation for real PhotonVision hardware. */
 public class LibVisionIOPhotonVision implements LibVisionIO {
-	public final PhotonCamera m_camera;
-	public final Transform3d m_robotToCamera;
+	protected final PhotonCamera m_camera;
+	private final Transform3d m_robotToCamera;
+
+	/**
+	 * A fallback option for when new data isn't received after a periodic update. Uses the
+	 * previous data with a limit of {@link #kPreviousDataStaleUsageLimit} usages per stale update,
+	 * usually for noise preventation. Defaults to false due to possible issues with the autonomous
+	 * mode.
+	 */
+	public static boolean kUsePreviousDataIfNonePublished = false;
+	/**
+	 * For the fallback option {@link #kUsePreviousDataIfNonePublished}, the maximum usage amount
+	 * of a stale reading before it's discarded. Defaults to a maximum of 4 usages per stale
+	 * reading.
+	 */
+	public static int kPreviousDataStaleUsageLimit = 4;
+
+	private List<PhotonPipelineResult> m_lastResults;
+	private int m_lastDataUsageAmount;
 
 	/**
 	 * Constructs a new LibVisionIOPhotonVision.
@@ -29,14 +47,33 @@ public class LibVisionIOPhotonVision implements LibVisionIO {
 	}
 
 	@Override
-	public void updateInputs(VisionIOInputs inputs) {
+	public void updateInputs(LibVisionIOInputs inputs) {
 		// Update connection status
 		inputs.isCameraConnected = m_camera.isConnected();
 
 		// Read new camera observations
 		Set<Short> tagIDs = new HashSet<>();
 		List<PoseObservation> poseObservations = new LinkedList<>();
-		for (var result : m_camera.getAllUnreadResults()) {
+
+		var results = m_camera.getAllUnreadResults();
+		if (!results.isEmpty()) {
+			// Fresh data recorded
+			m_lastDataUsageAmount = 0;
+			m_lastResults = results;
+		} else {
+			// No fresh data, go to fallback
+			if (kUsePreviousDataIfNonePublished && m_lastResults != null
+					&& m_lastDataUsageAmount < kPreviousDataStaleUsageLimit) {
+				// Re-use the previous data if none received
+				results = m_lastResults;
+				m_lastDataUsageAmount++;
+			} else {
+				// Increment stale counter so we eventually stop trying
+				m_lastDataUsageAmount++;
+			}
+		}
+
+		for (var result : results) {
 			// Update latest target observation
 			if (result.hasTargets()) {
 				inputs.latestTargetObservation = new TargetObservation(
