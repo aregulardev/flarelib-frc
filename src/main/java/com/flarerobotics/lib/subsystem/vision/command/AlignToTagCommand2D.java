@@ -3,9 +3,9 @@ package com.flarerobotics.lib.subsystem.vision.command;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Meters;
 
-import com.flarerobotics.lib.PoseUtils;
 import com.flarerobotics.lib.container.PIDConstants;
 import com.flarerobotics.lib.subsystem.vision.LibVisionSubsystem;
+import com.flarerobotics.lib.utils.PoseUtils;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,9 +22,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-// TODO verify the 180 degree angle is not robot-dependant, if so make it configurable with a
-// static constant
-
 /**
  * Aligns the robot to the given tag from a birdseye 2D view.
  *
@@ -33,7 +30,6 @@ import java.util.stream.Collectors;
  *
  * <p>
  * Example usage:
- * <p>
  *
  * <pre>
  * <code>
@@ -379,6 +375,7 @@ public class AlignToTagCommand2D extends Command {
 		// Apply setpoints
 		m_xPID.setSetpoint(m_pose.getX());
 		m_yPID.setSetpoint(m_pose.getY());
+        // Add 180 to invert the look of the robot to face towards the tag
 		m_aPID.setSetpoint(180 + m_pose.getRotation().getDegrees() - m_txOffsetDegrees);
 	}
 }

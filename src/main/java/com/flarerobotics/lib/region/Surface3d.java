@@ -1,6 +1,6 @@
 package com.flarerobotics.lib.region;
 
-import com.flarerobotics.lib.Utils;
+import com.flarerobotics.lib.utils.Utils;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 

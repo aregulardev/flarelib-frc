@@ -59,6 +59,7 @@ public class SparkUtils {
 	public static boolean getInverted(SparkFlex spark) {
 		return CANSparkJNI.c_Spark_GetInverted(spark.sparkHandle);
 	}
+
 	/**
 	 * Tries to apply the given function until a valid Ok status code is reached, or until the
 	 * maximum number of tries is exceeded. The logged values can be checked from the

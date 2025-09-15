@@ -2,6 +2,7 @@ package com.flarerobotics.lib.subsystem.led;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import com.flarerobotics.lib.utils.Tracer;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -32,6 +33,8 @@ public class LibLEDSubsystem extends SubsystemBase {
 
 	private LEDPatterns m_patterns = new LEDPatterns(this);
 
+	private int m_port;
+
 	/**
 	 * Constructs a new LibLEDSubsystem.
 	 *
@@ -46,6 +49,8 @@ public class LibLEDSubsystem extends SubsystemBase {
 		m_led.setLength(m_buffer.getLength());
 		m_led.start();
 		resetLED();
+
+		m_port = ledPort;
 	}
 
 	/**
@@ -64,9 +69,12 @@ public class LibLEDSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		Tracer.start("LEDs_Periodic_" + m_port);
 		m_led.setData(m_buffer);
 
 		if (m_defaultRunnable != null) { m_defaultRunnable.run(); }
+
+		Tracer.finish("LEDs_Periodic_" + m_port);
 	}
 
 	/**

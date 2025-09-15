@@ -1,8 +1,8 @@
 package com.flarerobotics.lib.control;
 
 /**
- * Utility class for calculating subsystem ratios. Returns in terms of CTRE conversion factor.
- * For REV use, take 1/f, the reciprocal instead.
+ * Utility class for calculating subsystem ratios. Returns in terms of REV conversion factor.
+ * For CTRE use, take 1/f, the reciprocal instead.
  */
 public class SubsystemRatios {
 	private SubsystemRatios() {}

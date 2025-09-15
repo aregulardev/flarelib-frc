@@ -5,7 +5,7 @@ package com.flarerobotics.lib.container;
  * to avoid errors.
  */
 public class DoubleContainer {
-	public double m_value;
+	public double value;
 
 	/**
 	 * Constructs a new DoubleContainer.
@@ -13,6 +13,6 @@ public class DoubleContainer {
 	 * @param value The value to store.
 	 */
 	public DoubleContainer(double value) {
-		m_value = value;
+		this.value = value;
 	}
 }

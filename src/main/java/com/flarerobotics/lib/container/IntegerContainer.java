@@ -5,7 +5,7 @@ package com.flarerobotics.lib.container;
  * Used to avoid errors.
  */
 public class IntegerContainer {
-	public int m_value;
+	public int value;
 
 	/**
 	 * Constructs a new IntegerContainer.
@@ -13,6 +13,6 @@ public class IntegerContainer {
 	 * @param value The value to store.
 	 */
 	public IntegerContainer(int value) {
-		m_value = value;
+		this.value = value;
 	}
 }

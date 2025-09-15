@@ -1,5 +1,6 @@
 package com.flarerobotics.lib.auto;
 
+import com.flarerobotics.lib.utils.AllianceUtil;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.path.PathConstraints;
@@ -46,8 +47,8 @@ public class AutonomousManager {
 	private Supplier<Pose2d> m_robotPoseSupplier;
 
 	// Strategies
-	private PrimaryCommandSource m_primaryCommandSource = PrimaryCommandSource.NONE;
-	private PathfindStrategy m_pathfindStrategy = PathfindStrategy.DEFAULT;
+	private PrimaryCommandSource m_primaryCommandSource = PrimaryCommandSource.kNone;
+	private PathfindStrategy m_pathfindStrategy = PathfindStrategy.kDefault;
 
 	// Commands
 	private Command m_mainRetrievedCommand = Commands.none();
@@ -208,7 +209,7 @@ public class AutonomousManager {
 						Command cmd = m_commandMap.get(name);
 						if (cmd != null) { return cmd; }
 
-						Pose2d pose = m_poseMap.get(name);
+						Pose2d pose = AllianceUtil.flipWithAlliance(m_poseMap.get(name));
 						if (pose != null) return getPathfindCommandPrivate(pose, name);
 
 						warnOrThrow("invalid command or path name '" + name + "'");
@@ -243,7 +244,7 @@ public class AutonomousManager {
 			return m_instance;
 		}
 
-		m_commandChooser = AutoBuilder.buildAutoChooser(null);
+		m_commandChooser = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData(kCommandChooserDashboardKey, m_commandChooser);
 		return m_instance;
 	}
@@ -296,7 +297,7 @@ public class AutonomousManager {
 
 	/**
 	 * Sets the autonomous command supplier. Only used when the primary source is
-	 * {@link PrimaryCommandSource#SUPPLIER}.
+	 * {@link PrimaryCommandSource#kSupplier}.
 	 *
 	 * @param supplier The supplier.
 	 * @return The singleton instance for chaining.
@@ -318,6 +319,16 @@ public class AutonomousManager {
 	}
 
 	/**
+	 * Makes the autonomous manager use a custom routine builder to get the autonomous command.
+	 *
+	 * @param builder The routine builder.
+	 */
+	public void setCustomRoutineBuilder(CustomRoutineBuilder builder) {
+		setAutoSupplier(builder::getRoutine);
+		setPrimaryCommandSource(PrimaryCommandSource.kSupplier);
+	}
+
+	/**
 	 * Returns the autonomous command based on the primary source. <b>May return null if a faulty
 	 * supplier is passed or an error is thrown. Does not account for the fallback command.</b>
 	 *
@@ -329,12 +340,12 @@ public class AutonomousManager {
 		try {
 			Command cmd;
 			switch (m_primaryCommandSource) {
-				case NONE: {
+				case kNone: {
 					cmd = null;
 					break;
 				}
 
-				case SUPPLIER: {
+				case kSupplier: {
 					if (m_autoSupplier == null) {
 						warnOrThrow("no supplier was provided");
 						cmd = null;
@@ -344,7 +355,7 @@ public class AutonomousManager {
 					break;
 				}
 
-				case CHOOSER_COMMAND: {
+				case kChooserCommand: {
 					if (m_commandChooser == null) {
 						warnOrThrow("command sendable chooser not initialized");
 						cmd = null;
@@ -354,12 +365,12 @@ public class AutonomousManager {
 					break;
 				}
 
-				case DASHBOARD_PATTERN_STRING_INPUT: {
+				case kDashboardPatternStringInput: {
 					cmd = generateAutoFromString(SmartDashboard.getString(m_dashboardPatternInputKey, ""));
 					break;
 				}
 
-				case WIDGET_AUTO_BUILDER_INTEGRATION: {
+				case kWidgetAutoBuilderIntegration: {
 					var entry = NetworkTableInstance.getDefault().getEntry("/" + kNTAutonomousKey + "/Pattern");
 					if (!entry.exists()) { warnOrThrow("widget entry not found"); return null; }
 					cmd = generateAutoFromString(entry.getString(""));
@@ -401,7 +412,7 @@ public class AutonomousManager {
 
 	/**
 	 * Sets the key to use for the dashboard input. This is only used when the primary input mode
-	 * is set to {@link PrimaryCommandSource#DASHBOARD_PATTERN_STRING_INPUT}.
+	 * is set to {@link PrimaryCommandSource#kDashboardPatternStringInput}.
 	 *
 	 * <p>
 	 * Defauts to "Autonomous Pattern".
@@ -498,7 +509,7 @@ public class AutonomousManager {
 	// Pathfinding //
 	/**
 	 * Sets the pathfinding strategy to use for the autonomous manager. Defaults to
-	 * {@link PathfindStrategy#DEFAULT}.
+	 * {@link PathfindStrategy#kDefault}.
 	 *
 	 * @param strategy The new pathfinding strategy to use.
 	 * @return The singleton instance for chaining.
@@ -554,7 +565,7 @@ public class AutonomousManager {
 			// Create a new trigger for the zone
 			Trigger zoneTrigger = new Trigger(() -> {
 				Pose2d robotPose = m_robotPoseSupplier != null ? m_robotPoseSupplier.get() : null;
-				Pose2d targetPose = m_poseMap.get(trigger.getPoseName());
+				Pose2d targetPose = AllianceUtil.flipWithAlliance(m_poseMap.get(trigger.getPoseName()));
 				if (targetPose == null) {
 					warnOrThrow("invalid pose name '" + trigger.getPoseName() + "' passed to trigger");
 					return false;
@@ -653,9 +664,10 @@ public class AutonomousManager {
 
 	private Command getPathfindCommandPrivate(Pose2d pose, String poseName) {
 		if (pose == null) return Commands.none();
+		pose = AllianceUtil.flipWithAlliance(pose);
 
 		// The setup for pathfinding
-		if (m_pathfindStrategy == PathfindStrategy.PRECISION_PATHFIND) {
+		if (m_pathfindStrategy == PathfindStrategy.kPrecisionPathfind) {
 			try {
 				PathPlannerPath path = PathPlannerPath.fromPathFile(poseName);
 				return AutoBuilder.pathfindThenFollowPath(path, m_constraints);
@@ -676,17 +688,17 @@ public class AutonomousManager {
 	 */
 	public enum PrimaryCommandSource {
 		/** Disables the autonomous mode. <i>The pre-auto command will still be ran.</i> */
-		NONE,
+		kNone,
 		/** Gets the command from the supplier provided. */
-		SUPPLIER,
+		kSupplier,
 		/** Gets the command from the command sendable chooser. */
-		CHOOSER_COMMAND,
+		kChooserCommand,
 		/** Gets the command from a dashboard string input. */
-		DASHBOARD_PATTERN_STRING_INPUT,
+		kDashboardPatternStringInput,
 		/**
 		 * Gets the command from the Flare autonomous routine builder widget. (ShuffleBoard)
 		 */
-		WIDGET_AUTO_BUILDER_INTEGRATION;
+		kWidgetAutoBuilderIntegration;
 	}
 
 	/**
@@ -697,14 +709,14 @@ public class AutonomousManager {
 		 * Uses the built in {@link AutoBuilder#pathfindToPose(Pose2d, PathConstraints)} method to
 		 * pathfind. <b>{@link AutoBuilder} must be configured.</b>
 		 */
-		DEFAULT,
+		kDefault,
 		/**
 		 * First pathfinds to the start of a path, and then follows the path which goes to a key
 		 * location for increased precision. The paths should start at a point relatively close to the
 		 * goal/ending point, and must have the same name as registered in the poses map.
 		 * <b>{@link AutoBuilder} must be configured.</b>
 		 */
-		PRECISION_PATHFIND;
+		kPrecisionPathfind;
 	}
 
 	/**

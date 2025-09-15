@@ -147,26 +147,26 @@ public class LEDPatterns {
 
 		return () -> {
 			double currentTime = Timer.getFPGATimestamp();
-			double elapsedTime = currentTime - previousTime.m_value;
-			previousTime.m_value = currentTime;
+			double elapsedTime = currentTime - previousTime.value;
+			previousTime.value = currentTime;
 			// reset everything if it's been a while since we've run this continuously
-			if (elapsedTime > 0.1) { elapsedTime = 0.0; startPoint.m_value = 0; movementBuffer.m_value = 0.0; }
+			if (elapsedTime > 0.1) { elapsedTime = 0.0; startPoint.value = 0; movementBuffer.value = 0.0; }
 
 			double stepPerLed = 255.0 / length;
 
-			movementBuffer.m_value += elapsedTime * ((m_subsystem.getBuffer().getLength() + length) / time);
-			if (movementBuffer.m_value > 1) {
-				startPoint.m_value += (int) movementBuffer.m_value;
-				if (multiple) startPoint.m_value %= (m_subsystem.getBuffer().getLength() + length);
-				movementBuffer.m_value %= 1;
+			movementBuffer.value += elapsedTime * ((m_subsystem.getBuffer().getLength() + length) / time);
+			if (movementBuffer.value > 1) {
+				startPoint.value += (int) movementBuffer.value;
+				if (multiple) startPoint.value %= (m_subsystem.getBuffer().getLength() + length);
+				movementBuffer.value %= 1;
 			}
 
 			// start at the start point and work backwards
 			// go till the end of the strip and cut off the end when i = 0
-			for (int i = startPoint.m_value; i > startPoint.m_value - length && i >= 0; i--) {
+			for (int i = startPoint.value; i > startPoint.value - length && i >= 0; i--) {
 				// if we're beyond the end of the strip, animate the final tail
 				if (i < m_subsystem.getBuffer().getLength()) {
-					int value = (int) (255 - (stepPerLed * (startPoint.m_value - i)));
+					int value = (int) (255 - (stepPerLed * (startPoint.value - i)));
 					m_subsystem.getBuffer().setHSV(i, extColor.hue(), extColor.saturation(), value);
 				}
 			}
