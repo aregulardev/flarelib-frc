@@ -3,13 +3,17 @@ package com.flarerobotics.lib.region;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import java.util.List;
+import org.dyn4j.geometry.Convex;
 
 /**
  * A polygonal region on the field. Used for dividing the field into smaller sections.
  *
  * The vertices must be specified in (either CW or CCW) order, and the polygon must be
  * non-self-intersecting.
+ *
+ * @deprecated Use {@link Convex} instead.
  */
+@Deprecated(forRemoval = false)
 public class PolygonalRegion {
 	private final List<Translation2d> m_vertices;
 

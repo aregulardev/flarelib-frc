@@ -37,7 +37,7 @@ public class LibVisionIOLimelight implements LibVisionIO {
 
 	/**
 	 * Constructs a new LibVisionIOLimelight.
-	 *
+     * 
 	 * @param name             The name of the Limelight.
 	 * @param rotationSupplier Supplier for the current robot rotation as reported by the gyro/IMU,
 	 *                         used for MegaTag2.
