@@ -192,3 +192,6 @@ src/main/deploy/trajectories/*.pathblob
 # Python files
 venv
 __pycache__
+
+# Robot code
+# /src/main/java/frc/robot/

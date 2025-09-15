@@ -13,11 +13,16 @@ FlareLib lets teams focus on strategy and tuning rather than boilerplate functio
 
 * **AprilTag Localization**: A vision subsystem template for reliable robot pose estimation using AprilTags, supporting both Limelight, PhotonVision hardware and simulations.
 * **Automated Alignment**: Command-based `AlignToTagCommand2D` for centering and orienting the robot relative to detected fiducials.
+* **Game Piece Detection**: A game piece detection subsystem template for locating and processing game pieces on the field. Supports both Limelight, PhotonVision hardware and simulations.
+
+### Subsystem Presets
+* **Bang-Bang Style Elevator**: A bang-bang controller style elevator, supporting the TalonFX, SparkMAX, and simulation.
+* **Generic Rollers**: A subsystem template for any rollers that don't need precise speeds, supporting the TalonFX, SparkMAX and simulation.
 
 ### Simulation Support
 
-* **AdvantageScope Subsystem Mocks**: Simulated AdvantageScope models for elevators (cascade-continuous) and arm/pivot assemblies, complete with configurable physics parameters.
-* **Battery Simulation**: Simulated real-life batteries via `BatteryUpdater`.
+* **AdvantageScope Subsystem Mocks**: Simulated AdvantageScope models for elevators (cascade-continuous) and arm/pivot assemblies.
+* **Subsystem Simulations**: Simulated subsystems via `ElevatorSimTilted`, `CustomDCMotorSim` - mostly forks of WPILib simulations to include features such as current limiting.
 
 ### Autonomous Routines
 
@@ -52,14 +57,14 @@ FlareLib lets teams focus on strategy and tuning rather than boilerplate functio
 * *ThriftyLib (v2025.1.1)*
 * *YAGSL (v2025.8.0)*
 
-  
+
 ### Adding FlareLib to Your Project
 
 1. Clone the repository to a directory:
    ```bash
    git clone https://github.com/aregulardev/flarelib-frc.git
    ```
-2. Copy your dependencies, repositories, vendordeps to the cloned repository. 
+2. Copy your dependencies, repositories, vendordeps to the cloned repository.
 3. Move your code, classes, packages, etc. to the new repository after the dependencies.
 4. Build and deploy using the standard WPILib tools.
 
@@ -78,7 +83,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         (...)
-        // A perfectly upright 2-stage continuous elevator with a max height of 1.81m. 
+        // A perfectly upright 2-stage continuous elevator with a max height of 1.81m.
         m_display = new ContinuousAscopeDisplay("elevator", 2, 1.81, 0, m_elevator::getHeightMeters, () -> Rotation3d.kZero)
     }
 }
@@ -90,13 +95,14 @@ The Javadocs are accessible at https://aregulardev.github.io/flarelib-docs/.
 ## Quick Module Overview
 
 ### com.flarerobotics.lib
-* **subsystem**: Includes preset adressable LED and Vision subsystems.
-* **sim**: Includes simulation models, e.g. `ElevatorSimTilted`.
-* **region**: Includes 2D field regions.
-* **math**: Includes math modules, such as `PhysicsUtil` and `BilinearInterpolator2D`. 
+* **utils**: Includes generic utility classes such as `AllianceUtil` or `VisionUtils`.
+* **subsystem**: Includes preset subsystems for systems such as rollers, LEDs, object detection, vision, etc.
+* **sim**: Includes simulation models: `ElevatorSimTilted`, `CustomDCMotorSim`, `HardwareSimUtils`.
+* **region**: Includes 2D and 3D field regions (mostly deprecated for external libraries).
+* **math**: Includes math modules, such as `PhysicsUtil` and `BilinearInterpolator2D`.
 * **control**: Includes classes related to control, such as `RotationalKinematics`, `ShooterCalculator`.
-* **container**: Includes container classes, e.g. `Vector3` or `IntegerContainer`.
-* **auto**: Includes classes related to the autonomous period, such as `AutonomousManager` or `LocalADStarAK`. 
+* **container**: Includes container classes, e.g. `Vector3` or `LoggedTunableNumber`.
+* **auto**: Includes classes related to the autonomous period, such as `AutonomousManager` or `LineTrajectoryUtils`.
 * **ascope**: Includes classes for displaying subsystems in AdvantageScope, such as `CascadeAscopeDisplay`.
 
 ### ctre.phoenix6.configs
