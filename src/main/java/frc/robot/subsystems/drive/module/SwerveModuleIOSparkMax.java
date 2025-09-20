@@ -121,7 +121,7 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
 		inputs.driveTemperatureCelsius = m_driveSpark.getMotorTemperature();
 
 		// Update steering inputs
-		inputs.driveMotorConnected = m_turnSpark.getLastError() != REVLibError.kOk;
+		inputs.turnMotorConnected = m_turnSpark.getLastError() != REVLibError.kOk;
 		inputs.turnPosition = new Rotation2d(m_turnEncoder.getPosition()).minus(m_offset);
 		inputs.turnVelocityRadPerSec = m_turnEncoder.getVelocity();
 		inputs.turnAppliedVolts = m_turnSpark.getAppliedOutput() * m_turnSpark.getBusVoltage();
