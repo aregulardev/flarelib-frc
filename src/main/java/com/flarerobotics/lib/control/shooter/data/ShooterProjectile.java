@@ -34,7 +34,7 @@ public class ShooterProjectile {
 		// Get initial acceleration
 		double speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
 		Vector3 force = velocity.scale(m_type.getDragForceCoeff() * speed)
-				.add(new Vector3(0, PhysicsUtil.kG * type.getMass(), 0));
+				.add(new Vector3(0, 0, PhysicsUtil.kG * type.getMass()));
 		acceleration = force.scale(-1 / type.getMass());
 	}
 

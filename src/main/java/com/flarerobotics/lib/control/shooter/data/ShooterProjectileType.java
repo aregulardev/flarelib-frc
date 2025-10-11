@@ -11,10 +11,11 @@ public class ShooterProjectileType {
 	/**
 	 * Constructs a new ShooterProjectile.
 	 *
-	 * @param effectiveMOI The effective moment of inertia. See {@link ProjectileShape}.
-	 * @param mass         The mass in kg.
-	 * @param e            The efficiency coefficient, to match the actual behavior of the
-	 *                     projectile during launch.
+	 * @param effectiveMOI         The effective moment of inertia. See {@link ProjectileShape}.
+	 * @param dragForceCoefficient The drag force coefficient.
+	 * @param mass                 The mass in kg.
+	 * @param e                    The efficiency coefficient, to match the actual behavior of the
+	 *                             projectile during launch.
 	 */
 	public ShooterProjectileType(double effectiveMOI, double dragForceCoefficient, double mass, double e) {
 		m_moi = effectiveMOI;

@@ -8,6 +8,8 @@ public class BilinearInterpolator2D {
 	private final double[] m_X, m_Y;
 	private final double[][] m_V;
 
+	private double m_minX = Double.POSITIVE_INFINITY, m_maxX = Double.NEGATIVE_INFINITY;
+
 	/**
 	 * Constructs a new BilinearInterpolator2D.
 	 *
@@ -25,7 +27,11 @@ public class BilinearInterpolator2D {
 		m_X = X.clone();
 		m_Y = Y.clone();
 		m_V = new double[X.length][Y.length];
-		for (int i = 0; i < X.length; i++) { System.arraycopy(V[i], 0, m_V[i], 0, Y.length); }
+		for (int i = 0; i < X.length; i++) {
+			m_minX = Math.min(m_minX, X[i]);
+			m_maxX = Math.max(m_maxX, X[i]);
+			System.arraycopy(V[i], 0, m_V[i], 0, Y.length);
+		}
 	}
 
 	/**
@@ -61,6 +67,20 @@ public class BilinearInterpolator2D {
 		double v1 = V01 + tx * (V11 - V01);
 		return v0 + ty * (v1 - v0);
 	}
+
+	/**
+	 * Returns the minimum X value in the grid.
+	 *
+	 * @return The minimum X value.
+	 */
+	public double getMinX() { return m_minX; }
+
+	/**
+	 * Returns the maximum X value in the grid.
+	 *
+	 * @return The maximum X value.
+	 */
+	public double getMaxX() { return m_maxX; }
 
 	// Helper: find smallest idx such that A[idx] >= x
 	private static int findUpperIndex(double[] A, double x) {

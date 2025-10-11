@@ -1,6 +1,7 @@
 package com.flarerobotics.lib.control.shooter.data;
 
 import com.flarerobotics.lib.math.BilinearInterpolator2D;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.system.plant.DCMotor;
 
@@ -27,6 +28,10 @@ public class LibShooterDescriptor {
 	private double m_flywheelToShooterReduction = 1;
 	private double m_hopperDelay = 0.1;
 	private double m_nominalVoltage = 12.5;
+	private double m_barrelLength = 0.4;
+	private double m_validityCheckHeightTol = 0.1;
+
+	private Transform2d m_pivotOffset = new Transform2d();
 
 	// Calculation components
 	private BilinearInterpolator2D m_angleInterpolator;
@@ -54,9 +59,13 @@ public class LibShooterDescriptor {
 		m_flywheelToShooterReduction = builder.m_flywheelToShooterReduction;
 		m_hopperDelay = builder.m_hopperDelay;
 		m_nominalVoltage = builder.m_nominalVoltage;
+		m_barrelLength = builder.m_barrelLength;
+		m_validityCheckHeightTol = builder.m_validityCheckHeightTol;
 		m_angleInterpolator = builder.m_angleInterpolator;
 		m_rpmInterpolator = builder.m_rpmInterpolator;
 		m_windupTimes = builder.m_windupTimes;
+
+		m_pivotOffset = builder.m_pivotOffset;
 	}
 
 	/** A builder class for ShooterDescriptor paramters. */
@@ -78,9 +87,13 @@ public class LibShooterDescriptor {
 		private double m_flywheelToShooterReduction = 1;
 		private double m_hopperDelay = 0.1;
 		private double m_nominalVoltage = 12.5;
+		private double m_barrelLength = 0.4;
+		private double m_validityCheckHeightTol = 0.1;
 		private BilinearInterpolator2D m_angleInterpolator;
 		private BilinearInterpolator2D m_rpmInterpolator;
 		private InterpolatingDoubleTreeMap m_windupTimes;
+
+		private Transform2d m_pivotOffset = new Transform2d();
 
 		/**
 		 * Constructs a new Builder.
@@ -141,13 +154,39 @@ public class LibShooterDescriptor {
 
 		/**
 		 * Sets the hopper delay, defined as the time it takes the game piece from the hopper to being
-		 * launched, not including the spin-up time.
+		 * launched, not including the spin-up time. Note that you may need to set this to 0 if you
+		 * keep updating the calculator until the note fully exits the robot, the same may apply to the
+		 * spin-up times.
 		 *
 		 * @param seconds The delay.
 		 * @return The builder instance for chaining.
 		 */
 		public Builder hopperDelay(double seconds) {
 			m_hopperDelay = seconds;
+			return this;
+		}
+
+		/**
+		 * Sets the length of the barrel from the pivot point to the exit point.
+		 *
+		 * @param length The length in meters.
+		 * @return The builder instance for chaining.
+		 */
+		public Builder barrelLength(double length) {
+			m_barrelLength = length;
+			return this;
+		}
+
+		/**
+		 * Sets the height tolerance for hit validity checks. When the difference between these desired
+		 * height and the approximate max height are greater than this value, the shot is considered
+		 * invalid. Defaults to 0.1m.
+		 *
+		 * @param tol The tolerance in meters.
+		 * @return The builder instance for chaining.
+		 */
+		public Builder validityCheckHeightTolerance(double tol) {
+			m_validityCheckHeightTol = tol;
 			return this;
 		}
 
@@ -161,7 +200,7 @@ public class LibShooterDescriptor {
 		 * <code>
 		 * // Sorted Arrays
 		 * double[] horizontalDistances = { 2.0, 3.0, 4.0, 5.0 }; // meters
-		 * double[] heightDiffs = { -0.5, 0.0, +0.5, +1.0 }; // meters, relative to ground
+		 * double[] heightDiffs = { -0.5, 0.0, +0.5, +1.0 }; // meters, relative to ground (not pivot)
 		 * double[][] angleGrid = {
 		 *         // -----------------> HeightDiff (-0.5 -> +1.0)
 		 *         { 45, 40, 35, 30 }, // at d=2.0
@@ -238,7 +277,7 @@ public class LibShooterDescriptor {
 		 * <code>
 		 * // Sorted Arrays
 		 * double[] horizontalDistances = { 2.0, 3.0, 4.0, 5.0 }; // meters
-		 * double[] heightDiffs = { -0.5, 0.0, +0.5, +1.0 }; // meters, relative to ground
+		 * double[] heightDiffs = { -0.5, 0.0, +0.5, +1.0 }; // meters, relative to ground (not pivot)
 		 * double[][] angleGrid = {
 		 *         // -----------------> HeightDiff (-0.5 -> +1.0)
 		 *         { 45, 40, 35, 30 }, // at d=2.0
@@ -277,6 +316,17 @@ public class LibShooterDescriptor {
 		public Builder dataSet(BilinearInterpolator2D angleInterpolator, BilinearInterpolator2D rpmInterpolator) {
 			m_angleInterpolator = angleInterpolator;
 			m_rpmInterpolator = rpmInterpolator;
+			return this;
+		}
+
+		/**
+		 * Sets the birdseye pivot offset relative to the robot's center.
+		 *
+		 * @param offset The offset.
+		 * @return The builder instance for chaining.
+		 */
+		public Builder pivotOffset(Transform2d offset) {
+			m_pivotOffset = offset;
 			return this;
 		}
 
@@ -346,10 +396,15 @@ public class LibShooterDescriptor {
 
 	public double getNominalVoltage() { return m_nominalVoltage; }
 
+	public double getBarrelLength() { return m_barrelLength; }
+
+	public double getValidityCheckHeightTol() { return m_validityCheckHeightTol; }
+
 	public BilinearInterpolator2D getAngleInterpolator() { return m_angleInterpolator; }
 
 	public BilinearInterpolator2D getRPMInterpolator() { return m_rpmInterpolator; }
 
 	public InterpolatingDoubleTreeMap getWindupTimes() { return m_windupTimes; }
 
+	public Transform2d getPivotOffset() { return m_pivotOffset; }
 }
