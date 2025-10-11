@@ -8,6 +8,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N8;
@@ -134,15 +135,8 @@ public class VisionUtils {
 		double xRobot = robotToCamera.getX() + xCam;
 		double yRobot = robotToCamera.getY() + yCam;
 
-		// Rotate/translate from robot frame to field frame using robot field pose
-		Rotation2d rtheta = robotFieldPose.getRotation();
-		double cos = rtheta.getCos();
-		double sin = rtheta.getSin();
-
-		double xField = robotFieldPose.getX() + (xRobot * cos - yRobot * sin);
-		double yField = robotFieldPose.getY() + (xRobot * sin + yRobot * cos);
-
-		return new Translation2d(xField, yField);
+		return robotFieldPose.transformBy(new Transform2d(xRobot, yRobot, new Rotation2d(bearingCameraRad)))
+				.getTranslation();
 	}
 
 	/**

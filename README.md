@@ -47,13 +47,13 @@ FlareLib lets teams focus on strategy and tuning rather than boilerplate functio
 
 *Note: The following dependencies are pre-installed for FlareLib:*
 * *AdvantageKit (v4.1.2)*
-* *MapleSim (v0.3.11)*
+* *MapleSim (v0.3.14)*
 * *PathPlanner (v2025.2.7)*
-* *Phoenix 5 (v5.35.1) and 6 (v25.3.2)*
+* *Phoenix 5 (v5.35.1) and 6 (v25.4.0)*
 * *Photonlib (v2025.3.1)*
 * *ReduxLib (v2025.0.1)*
 * *REVLib (v2025.0.3)*
-* *Studica (v2025.0.0)*
+* *Studica (v2025.0.1)*
 * *ThriftyLib (v2025.1.1)*
 * *YAGSL (v2025.8.0)*
 
